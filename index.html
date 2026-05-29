@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Department Resource HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <style>
+        :root {
+            --panel-bg: rgba(15, 15, 15, 0.75);
+            --accent: #d4af37;
+            --accent-hover: #b8921a;
+            --text-main: #f8fafc;
+            --text-muted: #d4d4d4;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #000;
+            overflow-x: hidden;
+        }
+
+        .video-background {
+            position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;
+            width: auto; height: auto; z-index: -2; object-fit: cover;
+        }
+
+        .video-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); z-index: -1;
+        }
+
+        .lang-bar { width: 100%; max-width: 750px; display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 20px; z-index: 10; }
+        .lang-btn { font-size: 1.5rem; cursor: pointer; filter: grayscale(0.6); transition: 0.3s; border: 2px solid transparent; border-radius: 4px; padding: 2px; }
+        .lang-btn:hover, .lang-btn.active { filter: grayscale(0); transform: scale(1.15); border-color: var(--accent); }
+
+        .hub-container { max-width: 750px; width: 100%; z-index: 5; }
+
+        header { text-align: center; margin-bottom: 30px; display: flex; flex-direction: column; align-items: center; }
+        .logo-img { width: 150px; height: auto; margin-bottom: 15px; border-radius: 50%; box-shadow: 0 0 25px rgba(212, 175, 55, 0.3); }
+        h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+        header p { color: var(--text-muted); font-size: 0.95rem; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+        
+        .qr-card { background: white; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .qr-card p { color: #0a0a0a; font-weight: 700; margin-top: 12px; font-size: 0.8rem; text-align: center; letter-spacing: 0.5px;}
+
+        .category-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--accent); margin: 25px 0 12px 5px; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+        .resource-item { background: var(--panel-bg); padding: 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; margin-bottom: 10px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.2s ease; }
+        .resource-item:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.5); background: rgba(25, 25, 25, 0.85); box-shadow: 0 5px 15px rgba(0,0,0,0.4); }
+
+        .file-info { display: flex; align-items: center; gap: 15px; }
+        .file-icon { font-size: 1.5rem; }
+        .file-name { font-weight: 600; display: block; margin-bottom: 2px; }
+        .file-meta { font-size: 0.85rem; color: #cbd5e1; }
+
+        .btn-download { background: var(--accent); color: #0a0a0a; padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; transition: 0.2s; }
+        .resource-item:hover .btn-download { background: var(--accent-hover); }
+
+        .status-card { background: rgba(20, 20, 20, 0.9); border: 2px solid var(--danger); padding: 30px; border-radius: 16px; text-align: center; backdrop-filter: blur(10px); }
+        .status-card h2 { color: var(--danger); margin-bottom: 10px; }
+        .status-card p { color: var(--text-main); }
+
+        @media print { .lang-bar, .category-title, .resource-item, .video-background, .video-overlay { display: none; } }
+    </style>
+</head>
+<body>
+
+    <video autoplay loop muted playsinline class="video-background">
+        <source src="sfondo.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <div class="lang-bar" id="langBar">
+        <span class="lang-btn active" onclick="setLanguage('it')" title="Italiano">🇮🇹</span>
+        <span class="lang-btn" onclick="setLanguage('en')" title="English">🇬🇧</span>
+        <span class="lang-btn" onclick="setLanguage('fr')" title="Français">🇫🇷</span>
+    </div>
+
+    <div class="hub-container">
+        <header>
+            <img src="logo.jpeg" alt="Training Department Logo" class="logo-img">
+            <h1 id="mainTitle">Training Department Resource HUB</h1>
+            <p id="subTitle">Materiali e Risorse Digitali</p>
+        </header>
+
+        <div id="dynamicContent">
+            </div>
+    </div>
+
+<script>
+    // ==========================================================
+    // INCOLLA QUI SOTTO IL TUO LINK DI GOOGLE FOGLI PUBBLICATO CSV
+    // ==========================================================
+    const LINK_CSV = "INCOLLA_QUI_IL_LINK_DEL_TUO_CSV";
+
+    const translations = {
+        it: { subTitle: "Materiali e Risorse Digitali", qrText: "SCANSIONA PER ACCEDERE AI FILE DEL TUO CORSO", cat1: "Materiale Didattico", dlText: "SCARICA", errNoCourse: "CODICE CORSO NON VALIDO", errNoCourseTxt: "Specificare un codice corso valido nell'URL o scansionare il QR code corretto.", errExpired: "ACCESSO SCADUTO", errExpiredTxt: "Il periodo di disponibilità per questo materiale è terminato.", loading: "Caricamento risorse in corso..." },
+        en: { subTitle: "Digital Materials & Resources", qrText: "SCAN TO ACCESS YOUR COURSE FILES", cat1: "Training Material", dlText: "DOWNLOAD", errNoCourse: "INVALID COURSE CODE", errNoCourseTxt: "Please provide a valid course code in the URL or scan the correct QR code.", errExpired: "ACCESS EXPIRED", errExpiredTxt: "The availability period for this material has ended.", loading: "Loading resources..." },
+        fr: { subTitle: "Matériels et Ressources Numériques", qrText: "SCANNEZ POUR ACCÉDER AUX FICHIERS DE VOTRE COURS", cat1: "Matériel Pédagogique", dlText: "TÉLÉCHARGER", errNoCourse: "CODE DE COURS INVALIDE", errNoCourseTxt: "Veuillez fournir un codice de cours valide dans l'URL ou scannez le bon QR code.", errExpired: "ACCÈS EXPIRÉ", errExpiredTxt: "La période de disponibilité di questo materiale est terminée.", loading: "Chargement delle risorse..." }
+    };
+
+    let currentLang = 'it';
+    let databaseCorsi = {};
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const ID_CORSO_ATTUALE = urlParams.get('corso') ? urlParams.get('corso').toLowerCase().trim() : "";
+
+    // Funzione per scaricare i dati da Google Fogli e convertirli in Database
+    async function caricaDatiDaGoogle() {
+        const container = document.getElementById('dynamicContent');
+        container.innerHTML = `<div style="text-align:center; padding:20px; color:var(--accent); font-weight:bold;">${translations[currentLang].loading}</div>`;
+        
+        try {
+            const response = await fetch(LINK_CSV);
+            const data = await response.text();
+            
+            // Analizza il file CSV riga per riga
+            const righe = data.split(/\r?\n/);
+            databaseCorsi = {};
+
+            // Saltiamo la prima riga di intestazione (i = 1)
+            for (let i = 1; i < righe.length; i++) {
+                if (!righe[i]) continue;
+                
+                // Gestione base del CSV separato da virgole
+                const colonne = righe[i].split(',');
+                if (colonne.length < 6) continue;
+
+                const idCorso = colonne[0].toLowerCase().trim();
+                const scadenza = colonne[1].trim();
+                const nomeFile = colonne[2].trim();
+                const infoFile = colonne[3].trim();
+                const icona = colonne[4].trim();
+                const urlDrive = colonne[5].trim();
+
+                if (!databaseCorsi[idCorso]) {
+                    databaseCorsi[idCorso] = { scadenza: scadenza, file: [] };
+                }
+                
+                databaseCorsi[idCorso].file.push({
+                    nome: nomeFile, meta: infoFile, icona: icona, url: urlDrive
+                });
+            }
+            
+            renderPage();
+        } catch (error) {
+            container.innerHTML = `<div class="status-card"><h2>ERRORE DI RETE</h2><p>Impossibile sincronizzare i dati con Google Fogli.</p></div>`;
+        }
+    }
+
+    function renderPage() {
+        const container = document.getElementById('dynamicContent');
+        
+        if (!ID_CORSO_ATTUALE || !databaseCorsi[ID_CORSO_ATTUALE]) {
+            document.getElementById('langBar').style.display = 'none';
+            container.innerHTML = `
+                <div class="status-card">
+                    <h2>${translations[currentLang].errNoCourse}</h2>
+                    <p>${translations[currentLang].errNoCourseTxt}</p>
+                </div>`;
+            return;
+        }
+
+        const corso = databaseCorsi[ID_CORSO_ATTUALE];
+        const oggi = new Date();
+        const dataScadenza = new Date(corso.scadenza);
+        dataScadenza.setHours(23, 59, 59, 999);
+
+        if (oggi > dataScadenza) {
+            container.innerHTML = `
+                <div class="status-card">
+                    <h2>${translations[currentLang].errExpired}</h2>
+                    <p>${translations[currentLang].errExpiredTxt}</p>
+                </div>`;
+            return;
+        }
+
+        let htmlValido = `
+            <div class="qr-card">
+                <div id="qrcode"></div>
+                <p id="qrText">${translations[currentLang].qrText}</p>
+            </div>
+            <div class="category-title">${translations[currentLang].cat1}</div>
+            <div class="resource-list">`;
+
+        corso.file.forEach(f => {
+            htmlValido += `
+                <a href="${f.url}" class="resource-item" target="_blank">
+                    <div class="file-info">
+                        <span class="file-icon">${f.icona}</span>
+                        <div>
+                            <span class="file-name">${f.nome}</span>
+                            <span class="file-meta">${f.meta}</span>
+                        </div>
+                    </div>
+                    <div class="btn-download dl-text">${translations[currentLang].dlText}</div>
+                </a>`;
+        });
+
+        htmlValido += `</div>`;
+        container.innerHTML = htmlValido;
+
+        new QRCode(document.getElementById("qrcode"), {
+            text: window.location.href,
+            width: 180, height: 180,
+            colorDark : "#0a0a0a", colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.getElementById('subTitle').innerText = translations[lang].subTitle;
+        renderPage();
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        if(event && event.currentTarget) event.currentTarget.classList.add('active');
+    }
+
+    window.onload = function() {
+        caricaDatiDaGoogle();
+    };
+</script>
+</body>
+</html>
