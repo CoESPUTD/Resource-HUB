@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoESPU Training Department Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
@@ -51,6 +52,10 @@
         h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
         header p { color: var(--text-muted); font-size: 0.95rem; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
         
+        /* Box QR Code Fisso */
+        .qr-card { background: white; padding: 20px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); }
+        .qr-card p { color: #0a0a0a; font-weight: 700; margin-top: 12px; font-size: 0.8rem; text-align: center; letter-spacing: 0.5px;}
+
         /* Pannello di Ricerca Corso */
         .search-card { background: var(--panel-bg); padding: 25px; border-radius: 16px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.7); margin-bottom: 30px; text-align: center; backdrop-filter: blur(10px); }
         .search-card h2 { font-size: 1.1rem; color: var(--accent); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -75,6 +80,8 @@
         .message-box { margin-top: 15px; font-size: 0.9rem; font-weight: 600; display: none; }
         .message-box.error { color: var(--danger); display: block; }
         .message-box.success { color: var(--success); display: block; }
+        
+        @media print { .lang-bar, .category-title, .resource-item, .video-background, .video-overlay, .search-card { display: none; } }
     </style>
 </head>
 <body>
@@ -97,6 +104,11 @@
             <p id="subTitle">Training Department Portal</p>
         </header>
 
+        <div class="qr-card">
+            <div id="qrcode"></div>
+            <p id="qrText">SCANSIONA PER ACCEDERE AL PORTALE</p>
+        </div>
+
         <div class="search-card">
             <h2 id="searchTitle">Accesso Materiale Didattico</h2>
             <div class="search-box">
@@ -106,28 +118,26 @@
             <div id="messageBox" class="message-box"></div>
         </div>
 
-        <div id="logisticaFissa">
-            </div>
-
-        <div id="didatticaDinamica">
-            </div>
+        <div id="logisticaFissa"></div>
+        <div id="didatticaDinamica"></div>
     </div>
 
 <script>
     // ==========================================================
-    // INCOLLA QUI SOTTO IL TUO LINK DI GOOGLE FOGLI PUBBLICATO CSV
+    // LINK DI GOOGLE FOGLI CORRETTO (PUBBLICATO COME CSV)
     // ==========================================================
-    const LINK_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?output=csv";
+    const LINK_CSV = "https://docs.google.com/spreadsheets/d/1Hc6UhZRoTsKIGZ_yB79YecolqVNXHNUxJHzIYI0vQ00/pub?output=csv";
 
     const translations = {
-        it: { subTitle: "Portale Supporto Logistico & Didattico", searchTitle: "Sblocco Materiale del Corso", placeholder: "Es: ALFA, BRAVO...", btnSearch: "Accedi", catLogistica: "📍 Logistica e Orientamento Centro (CoESPU)", catDidattica: "📋 Risorse Didattiche Sbloccate", catAI: "🤖 Assistente Virtuale AI", dlText: "APRI / SCARICA", errInvalid: "Codice corso non valido o scaduto.", succValid: "Corso sbloccato con successo!", loading: "Sincronizzazione dati in corso..." },
-        en: { subTitle: "Logistics & Training Support Portal", searchTitle: "Unlock Course Material", placeholder: "E.g.: ALFA, BRAVO...", btnSearch: "Access", catLogistica: "📍 Center Logistics & Orientation (CoESPU)", catDidattica: "📋 Unlocked Training Resources", catAI: "🤖 AI Virtual Assistant", dlText: "OPEN / DOWNLOAD", errInvalid: "Invalid or expired course code.", succValid: "Course unlocked successfully!", loading: "Synchronizing data..." },
-        fr: { subTitle: "Portail di Support Logistique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", loading: "Sincronisation des données..." }
+        it: { subTitle: "Portale Supporto Logistico & Didattico", searchTitle: "Sblocco Materiale del Corso", placeholder: "Es: ALFA, BRAVO...", btnSearch: "Accedi", qrText: "SCANSIONA PER ACCEDERE AL PORTALE", catLogistica: "📍 Logistica e Orientamento Centro (CoESPU)", catDidattica: "📋 Risorse Didattiche Sbloccate", catAI: "🤖 Assistente Virtuale AI", dlText: "APRI / SCARICA", errInvalid: "Codice corso non valido o scaduto.", succValid: "Corso sbloccato con successo!", loading: "Sincronizzazione dati in corso..." },
+        en: { subTitle: "Logistics & Training Support Portal", searchTitle: "Unlock Course Material", placeholder: "E.g.: ALFA, BRAVO...", btnSearch: "Access", qrText: "SCAN TO ACCESS THE PORTAL", catLogistica: "📍 Center Logistics & Orientation (CoESPU)", catDidattica: "📋 Unlocked Training Resources", catAI: "🤖 AI Virtual Assistant", dlText: "OPEN / DOWNLOAD", errInvalid: "Invalid or expired course code.", succValid: "Course unlocked successfully!", loading: "Synchronizing data..." },
+        fr: { subTitle: "Portail di Support Logistique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", qrText: "SCANNEZ POUR ACCÉDER AU PORTAIL", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", loading: "Sincronisation des données..." }
     };
 
     let currentLang = 'it';
     let databaseLogisticaFissa = [];
     let databaseCorsi = {};
+    let qrcodeObj = null;
 
     async function caricaDatiDaGoogle() {
         try {
@@ -153,11 +163,9 @@
 
                 const elemento = { nome: nomeFile, meta: infoFile, icona: icona, url: urlDrive };
 
-                // Se l'ID_Corso è "coespu" o la sezione è "logistica", va nei contenuti fissi visibili a tutti
                 if (idCorso === 'coespu' || sezione === 'logistica') {
                     databaseLogisticaFissa.push(elemento);
                 } else {
-                    // Altrimenti va nel cassetto dei corsi protetti
                     if (!databaseCorsi[idCorso]) {
                         databaseCorsi[idCorso] = { scadenza: scadenza, didattica: [], ai: [] };
                     }
@@ -167,9 +175,21 @@
                 }
             }
             renderLogisticaFissa();
+            generaQRCode();
         } catch (error) {
             console.error("Errore nel caricamento del CSV:", error);
         }
+    }
+
+    function generaQRCode() {
+        const qrContainer = document.getElementById("qrcode");
+        qrContainer.innerHTML = ""; // Svuota
+        qrcodeObj = new QRCode(qrContainer, {
+            text: window.location.href,
+            width: 170, height: 170,
+            colorDark : "#0a0a0a", colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
     }
 
     function renderLogisticaFissa() {
@@ -199,7 +219,7 @@
         const msgBox = document.getElementById('messageBox');
         const containerDinamico = document.getElementById('didatticaDinamica');
         
-        containerDinamico.innerHTML = ""; // Pulisce vecchi sblocchi
+        containerDinamico.innerHTML = "";
 
         if (!inputCode || !databaseCorsi[inputCode]) {
             msgBox.className = "message-box error";
@@ -218,13 +238,11 @@
             return;
         }
 
-        // Corso valido!
         msgBox.className = "message-box success";
         msgBox.innerText = translations[currentLang].succValid;
 
         let htmlDinamico = "";
         
-        // Sezione Didattica Sbloccata
         if (corso.didattica.length > 0) {
             htmlDinamico += `<div class="category-title">${translations[currentLang].catDidattica} [${inputCode.toUpperCase()}]</div><div class="resource-list">`;
             corso.didattica.forEach(f => {
@@ -243,7 +261,6 @@
             htmlDinamico += `</div>`;
         }
 
-        // Sezione AI Sbloccata
         if (corso.ai.length > 0) {
             htmlDinamico += `<div class="category-title">${translations[currentLang].catAI}</div><div class="resource-list">`;
             corso.ai.forEach(f => {
@@ -271,9 +288,10 @@
         document.getElementById('searchTitle').innerText = translations[lang].searchTitle;
         document.getElementById('courseCodeInput').placeholder = translations[lang].placeholder;
         document.getElementById('searchBtn').innerText = translations[lang].btnSearch;
+        document.getElementById('qrText').innerText = translations[lang].qrText;
         renderLogisticaFissa();
         const inputVal = document.getElementById('courseCodeInput').value;
-        if(inputVal) sbloccaCorso(); // Ri-aggiorna la ricerca se c'era testo scritto
+        if(inputVal) sbloccaCorso();
         
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         if(event && event.currentTarget) event.currentTarget.classList.add('active');
