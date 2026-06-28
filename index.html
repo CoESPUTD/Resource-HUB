@@ -100,7 +100,6 @@
         /* SEZIONE DESTRA: PLAYER VIDEO E NOTIZIE */
         .media-panel { background: var(--panel-bg); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); backdrop-filter: blur(10px); margin-bottom: 25px; text-align: center; }
         .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #333; margin-bottom: 15px; }
-        .video-container video { width: 100%; height: 100%; object-fit: contain; }
         
         .video-playlist { max-height: 140px; overflow-y: auto; text-align: left; margin-bottom: 20px; padding-right: 5px; }
         .playlist-item { padding: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; transition: 0.2s; }
@@ -173,7 +172,7 @@
                 <div id="messageBox" class="message-box"></div>
             </div>
 
-            <!-- BOX WHATSAPP DINAMICO (COMPARE SOLO DOPO LO SBLOCCO SE ESISTE IL LINK) -->
+            <!-- BOX WHATSAPP DINAMICO -->
             <div class="whatsapp-card" id="whatsappCard">
                 <p id="whatsappTitle">💬 Gruppo Ufficiale WhatsApp del Corso</p>
                 <div class="qr-holder">
@@ -190,9 +189,8 @@
             <div class="media-panel">
                 <div class="category-title" style="margin-top:0;" id="panelMediaTitle">📺 Media & Training Feed</div>
                 
-                <div class="video-container">
-                    <video id="mainPlayer" controls autoplay muted playsinline src=""></video>
-                </div>
+                <!-- CONTAINER DEL PLAYER INTELLIGENTE (IFRAME EMBED) -->
+                <div class="video-container" id="playerWrapper"></div>
                 
                 <div class="video-playlist" id="playlistContainer"></div>
 
@@ -208,12 +206,13 @@
     </div>
 
 <script>
+    // MENTI QUI IL TUO LINK CSV PERSONALE DEL TUO GOOGLE FOGLI
     const LINK_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?output=csv";
 
     const translations = {
         it: { subTitle: "Portale Supporto Logistico & Didattico", searchTitle: "Sblocco Materiale del Corso", placeholder: "Es: ALFA, BRAVO...", btnSearch: "Accedi", qrText: "SCANSIONA PER ACCEDERE AL PORTALE", catLogistica: "📍 Logistica e Orientamento Centro (CoESPU)", catDidattica: "📋 Risorse Didattiche Sbloccate", catAI: "🤖 Assistente Virtuale AI", dlText: "APRI / SCARICA", errInvalid: "Codice corso non valido o scaduto.", succValid: "Corso sbloccato con successo!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & AVVISI UTILI", waBtnText: "ENTRA NEL GRUPPO" },
         en: { subTitle: "Logistics & Training Support Portal", searchTitle: "Unlock Course Material", placeholder: "E.g.: ALFA, BRAVO...", btnSearch: "Access", qrText: "SCAN TO ACCESS THE PORTAL", catLogistica: "📍 Center Logistics & Orientation (CoESPU)", catDidattica: "📋 Unlocked Training Resources", catAI: "🤖 AI Virtual Assistant", dlText: "OPEN / DOWNLOAD", errInvalid: "Invalid or expired course code.", succValid: "Course unlocked successfully!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & USEFUL NOTICES", waBtnText: "JOIN THE GROUP" },
-        fr: { subTitle: "Portail de Support Loglique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", qrText: "SCANNEZ POUR ACCÉDER AU PORTAIL", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", panelMediaTitle: "📺 Flux Média & Entraînement", newsPanelTitle: "📢 COESPU INFO & AVIS UTILES", waBtnText: "REJOINDRE LE GROUPE" }
+        fr: { subTitle: "Portail de Support Logistique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", qrText: "SCANNEZ POUR ACCÉDER AU PORTAIL", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", panelMediaTitle: "📺 Flux Média & Entraînement", newsPanelTitle: "📢 COESPU INFO & AVIS UTILES", waBtnText: "REJOINDRE LE GROUPE" }
     };
 
     let currentLang = 'it';
@@ -221,7 +220,6 @@
     let databaseCorsi = {};
     let databaseVideoFissi = [];
     let databaseNotizie = [];
-    let waQrCodeObj = null;
 
     async function caricaDatiDaGoogle() {
         try {
@@ -281,15 +279,17 @@
 
     function renderPlaylistVideo(listaVideo) {
         const container = document.getElementById('playlistContainer');
-        const player = document.getElementById('mainPlayer');
+        const playerWrapper = document.getElementById('playerWrapper');
         container.innerHTML = "";
 
         if (listaVideo.length === 0) {
             container.innerHTML = "<p style='font-size:0.8rem;color:#666;padding:10px;'>Nessun video disponibile</p>";
-            player.src = "";
+            playerWrapper.innerHTML = "";
             return;
         }
-        player.src = listaVideo[0].url;
+
+        // Attiva automaticamente l'embed del primo video della lista
+        attivaVideoEmbed(listaVideo[0].url);
 
         listaVideo.forEach((v, index) => {
             const item = document.createElement('div');
@@ -298,11 +298,31 @@
             item.onclick = function() {
                 document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
                 item.classList.add('active');
-                player.src = v.url;
-                player.play();
+                attivaVideoEmbed(v.url);
             };
             container.appendChild(item);
         });
+    }
+
+    function attivaVideoEmbed(urlOriginario) {
+        const playerWrapper = document.getElementById('playerWrapper');
+        let embedUrl = urlOriginario;
+
+        // Trasforma in automatico i link standard di Drive in modalità preview pulita
+        if (urlOriginario.includes("drive.google.com")) {
+            let idFile = "";
+            if (urlOriginario.includes("/file/d/")) {
+                idFile = urlOriginario.split("/file/d/")[1].split("/")[0];
+            } else if (urlOriginario.includes("id=")) {
+                idFile = urlOriginario.split("id=")[1].split("&")[0];
+            }
+            if (idFile) {
+                embedUrl = `https://drive.google.com/file/d/${idFile}/preview`;
+            }
+        }
+
+        // Genera il frame isolato per non far vedere file o scritte sotto
+        playerWrapper.innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;" allow="autoplay" allowfullscreen></iframe>`;
     }
 
     function renderNotizieTicker() {
@@ -369,13 +389,11 @@
         msgBox.className = "message-box success";
         msgBox.innerText = translations[currentLang].succValid;
 
-        // Gestione QR Code WhatsApp Dinamico
         if (corso.whatsapp && corso.whatsapp.url) {
             document.getElementById('whatsappTitle').innerText = corso.whatsapp.nome || `💬 Gruppo WhatsApp [${inputCode.toUpperCase()}]`;
             document.getElementById('waLinkBtn').href = corso.whatsapp.url;
             waCard.style.display = "block";
             
-            // Genera il QR Code verde per WhatsApp
             new QRCode(waQrContainer, {
                 text: corso.whatsapp.url,
                 width: 150, height: 150,
@@ -408,13 +426,11 @@
                 htmlDinamico += `
                     <a href="${f.url}" class="resource-item" target="_blank">
                         <div class="file-info">
-                            <span class="file-info">
-                                <span class="file-icon">${f.icona}</span>
-                                <div>
-                                    <span class="file-name">${f.nome}</span>
-                                    <span class="file-meta">${f.meta}</span>
-                                </div>
-                            </span>
+                            <span class="file-icon">${f.icona}</span>
+                            <div>
+                                <span class="file-name">${f.nome}</span>
+                                <span class="file-meta">${f.meta}</span>
+                            </div>
                         </div>
                         <div class="btn-download">${translations[currentLang].dlText}</div>
                     </a>`;
