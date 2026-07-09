@@ -37,19 +37,22 @@
         .clock { font-size: 1.3rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
 
         .slide-container { flex-grow: 1; position: relative; width: 100%; }
-        .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out; display: flex; flex-direction: column; }
+        .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
         .panel.active { opacity: 1; pointer-events: auto; }
         
         .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; flex-shrink: 0; }
 
-        /* Tabelle */
+        /* Tabelle - Ottimizzazione Spazi Verticali */
         .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
         table { width: 100%; border-collapse: collapse; text-align: left; color: #e5e7eb; table-layout: fixed; }
-        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 8px 6px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); }
-        td { padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 6px 4px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); font-size: 0.75em; }
+        td { padding: 5px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Slide Istruttori - Layout e Font Dinamico */
-        #slideIstruttori table { font-size: 1rem; } /* Font base che verrà cambiato da JS */
+        /* Slide Aule - Font base dinamico */
+        #tableAule { font-size: 0.9rem; }
+
+        /* Slide Istruttori */
+        #slideIstruttori table { font-size: 1rem; }
         .split-tables-container { display: flex; gap: 20px; width: 100%; flex-grow: 1; overflow: hidden; }
         .split-column { width: 50%; display: flex; flex-direction: column; }
 
@@ -57,7 +60,7 @@
         .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: 0.3s; }
         .dot.active { background: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
 
-        .badge { padding: 3px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; font-size: 0.8em; }
+        .badge { padding: 2px 5px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 3px; font-size: 0.8em; }
         .badge.insede { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
         .badge.licenza { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
         .badge.missione { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
@@ -80,14 +83,24 @@
         </header>
 
         <div class="slide-container">
-            <div class="panel active" id="slideAuleA">
-                <div class="panel-title">🏛️ Aree Addestrative & Aule (1/2)</div>
-                <div class="table-responsive"><table id="tableAuleA"><thead><tr><th style="width:15%">Aula</th><th style="width:15%">Corso</th><th style="width:10%">Dal</th><th style="width:10%">Al</th><th style="width:8%">Pres.</th><th style="width:32%">Manager / Assistant</th><th style="width:10%">Stato</th></tr></thead><tbody id="bodyAuleA"></tbody></table></div>
-            </div>
-
-            <div class="panel" id="slideAuleB">
-                <div class="panel-title">🏛️ Aree Addestrative & Aule (2/2)</div>
-                <div class="table-responsive"><table id="tableAuleB"><thead><tr><th style="width:15%">Aula</th><th style="width:15%">Corso</th><th style="width:10%">Dal</th><th style="width:10%">Al</th><th style="width:8%">Pres.</th><th style="width:32%">Manager / Assistant</th><th style="width:10%">Stato</th></tr></thead><tbody id="bodyAuleB"></tbody></table></div>
+            <div class="panel active" id="slideAule">
+                <div class="panel-title">🏛️ Monitoraggio Aree Addestrative & Aule</div>
+                <div class="table-responsive">
+                    <table id="tableAule">
+                        <thead>
+                            <tr>
+                                <th style="width:16%">Aula</th>
+                                <th style="width:16%">Corso</th>
+                                <th style="width:10%">Dal</th>
+                                <th style="width:10%">Al</th>
+                                <th style="width:7%">Pres.</th>
+                                <th style="width:31%">Manager / Assistant</th>
+                                <th style="width:10%">Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyAule"></tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="panel" id="slideIstruttori">
@@ -100,7 +113,7 @@
         </div>
 
         <div class="dots-indicator">
-            <div class="dot active" id="dot1"></div><div class="dot" id="dot2"></div><div class="dot" id="dot3"></div>
+            <div class="dot active" id="dot1"></div><div class="dot" id="dot2"></div>
         </div>
     </div>
 
@@ -123,14 +136,14 @@
         
         let fase = 1;
         setInterval(() => {
-            const panels = ['slideAuleA', 'slideAuleB', 'slideIstruttori'];
+            const panels = ['slideAule', 'slideIstruttori'];
             panels.forEach(id => document.getElementById(id).classList.remove('active'));
-            [1,2,3].forEach(i => document.getElementById('dot'+i).classList.remove('active'));
+            [1,2].forEach(i => document.getElementById('dot'+i).classList.remove('active'));
             
-            fase = fase < 3 ? fase + 1 : 1;
+            fase = fase === 1 ? 2 : 1;
             document.getElementById(panels[fase-1]).classList.add('active');
             document.getElementById('dot'+fase).classList.add('active');
-        }, 13000);
+        }, 15000); // Ruota ogni 15 secondi tra le due schermate complete
     }
 
     async function caricaDatiMonitor() {
@@ -143,16 +156,26 @@
 
     function renderAule(csv) {
         const rows = csv.split(/\r?\n/).filter(r => r.split(',').length >= 10).slice(1);
-        const bodyA = document.getElementById('bodyAuleA'), bodyB = document.getElementById('bodyAuleB');
-        bodyA.innerHTML = ""; bodyB.innerHTML = "";
+        const body = document.getElementById('bodyAule');
+        body.innerHTML = "";
         
-        rows.forEach((r, i) => {
+        rows.forEach((r) => {
             const c = r.split(',');
             const stato = c[9].toUpperCase().trim();
             const badge = stato.includes("OCCUP") ? `<span class="badge assente">🔴 ${stato}</span>` : `<span class="badge insede">🟢 ${stato}</span>`;
-            const html = `<tr><td><b>${c[0]}</b></td><td>${c[2]||'-'}</td><td>${c[3]||'-'}</td><td>${c[4]||'-'}</td><td>${c[5]||'0'}</td><td style="font-size:0.85em">${c[7]} / ${c[8]}</td><td>${badge}</td></tr>`;
-            if (i < 8) bodyA.innerHTML += html; else bodyB.innerHTML += html;
+            
+            // Uniamo manager e assistant con stile compatto
+            const staff = `${c[7] || '-'} / ${c[8] || '-'}`;
+            
+            body.innerHTML += `<tr><td><b>${c[0]}</b></td><td>${c[2]||'-'}</td><td>${c[3]||'-'}</td><td>${c[4]||'-'}</td><td>${c[5]||'0'}</td><td style="font-size:0.88em; color:var(--text-muted);">${staff}</td><td>${badge}</td></tr>`;
         });
+
+        // 🚀 AUTO-FIT FONT PER LE AULE
+        const numRows = rows.length;
+        const containerHeight = 550; // Spazio verticale utile in pixel
+        // Calcolo della dimensione ottimale per far stare tutte le aule insieme
+        let dynamicSize = Math.min(1.1, containerHeight / (numRows * 33)); 
+        document.getElementById('tableAule').style.fontSize = dynamicSize + "rem";
     }
 
     function renderIstruttori(csv) {
@@ -185,12 +208,11 @@
             if (i < Math.ceil(rows.length / 2)) bodyS.innerHTML += html; else bodyD.innerHTML += html;
         });
 
-        // 🚀 LOGICA AUTO-FIT FONT
+        // AUTO-FIT FONT PER GLI ISTRUTTORI
         const maxRows = Math.ceil(rows.length / 2);
-        const containerHeight = 550; // Pixel disponibili circa su 768px totali
-        let dynamicSize = Math.min(1.4, containerHeight / (maxRows * 35)); // Calcolo empirico
+        const containerHeight = 550;
+        let dynamicSize = Math.min(1.3, containerHeight / (maxRows * 35));
         
-        // Applica il font calcolato alle tabelle istruttori
         document.getElementById('tableIstrSinistra').style.fontSize = dynamicSize + "rem";
         document.getElementById('tableIstrDestra').style.fontSize = dynamicSize + "rem";
     }
