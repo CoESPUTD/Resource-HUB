@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoESPU - Operational Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0f1d;
+            --panel-bg: rgba(16, 22, 42, 0.7);
+            --accent-gold: #d4af37;
+            --accent-blue: #1e3a8a;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 30px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Schermata Login Stile HUB */
+        #loginScreen { background: rgba(16, 22, 42, 0.95); padding: 40px; border-radius: 16px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 15px 35px rgba(0,0,0,0.6); text-align: center; margin-top: 12vh; max-width: 420px; width: 100%; backdrop-filter: blur(10px); }
+        .lock-icon { font-size: 3rem; margin-bottom: 15px; display: inline-block; filter: drop-shadow(0 0 10px rgba(212,175,55,0.3)); }
+        #loginScreen h2 { margin-bottom: 25px; color: var(--text-main); font-size: 1.4rem; letter-spacing: 1px; font-weight: 700; text-transform: uppercase; }
+        #loginScreen h2 span { color: var(--accent-gold); font-size: 0.9rem; display: block; margin-top: 5px; font-weight: 500; letter-spacing: 2px; }
+        .pass-input { width: 100%; padding: 14px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(10, 15, 29, 0.8); color: white; text-align: center; font-size: 1.2rem; margin-bottom: 20px; letter-spacing: 3px; transition: 0.3s; }
+        .pass-input:focus { outline: none; border-color: var(--accent-gold); box-shadow: 0 0 10px rgba(212,175,55,0.2); }
+        .login-btn { background: linear-gradient(135deg, #b8921a, var(--accent-gold)); color: #05050a; font-weight: 700; width: 100%; padding: 14px; border: none; border-radius: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; box-shadow: 0 4px 15px rgba(212,175,55,0.2); }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(212,175,55,0.4); }
+        .err-msg { color: var(--danger); font-size: 0.85rem; margin-top: 12px; font-weight: 600; display: none; }
+
+        /* Contenuto Dashboard */
+        #dashboardContent { display: none; width: 100%; max-width: 1700px; animation: fadeIn 0.6s ease-out; }
+        header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        header h1 { font-size: 1.9rem; color: var(--text-main); font-weight: 700; letter-spacing: 0.5px; }
+        header h1 span { color: var(--accent-gold); font-weight: 400; }
+        .clock { font-size: 1.4rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 6px 16px; border-radius: 20px; border: 1px solid rgba(212, 175, 55, 0.2); letter-spacing: 1px; }
+
+        .grid-container { display: grid; grid-template-columns: 1fr; gap: 30px; width: 100%; }
+        @media (min-width: 1300px) { .grid-container { grid-template-columns: 1.3fr 0.7fr; } }
+
+        .panel { background: var(--panel-bg); border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); padding: 25px; backdrop-filter: blur(12px); box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+        .panel-title { font-size: 1.15rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 10px; width: fit-content; }
+
+        /* Tabelle in continuità grafica con l'HUB */
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; color: #e5e7eb; }
+        th { background: rgba(255, 255, 255, 0.03); color: var(--text-muted); padding: 14px 12px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        td { padding: 15px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; }
+        tr:hover { background: rgba(255,255,255,0.02); }
+
+        /* Badge di Stato stilizzati */
+        .badge { padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; }
+        
+        .badge.libera { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge.occupata { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        
+        .badge.insede { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .badge.licenza { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .badge.missione { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .badge.assente { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <!-- SCHERMATA LOGIN STILE HUB -->
+    <div id="loginScreen">
+        <span class="lock-icon">🦅</span>
+        <h2>Training Department <span>Operational Dashboard</span></h2>
+        <input type="password" id="passwordInput" class="pass-input" placeholder="DIGITA PASSWORD" onkeydown="if(event.key==='Enter') verificaPassword()">
+        <button onclick="verificaPassword()" class="login-btn">Accedi al Monitor</button>
+        <div id="errorMsg" class="err-msg">Chiave di accesso errata. Riprovare.</div>
+    </div>
+
+    <!-- CONTENUTO DASHBOARD PROIETTORE -->
+    <div id="dashboardContent">
+        <header>
+            <h1>Training Department | <span>Operational Board</span></h1>
+            <div class="clock" id="liveClock">00:00:00</div>
+        </header>
+
+        <div class="grid-container">
+            <!-- PANNELLO AULE E REPARTI -->
+            <div class="panel">
+                <div class="panel-title">🏛️ Gestione Aree Addestrative & Aule</div>
+                <div class="table-responsive">
+                    <table id="tableAule">
+                        <thead>
+                            <tr>
+                                <th>Aula</th>
+                                <th>Posti</th>
+                                <th>Corso</th>
+                                <th>Dal</th>
+                                <th>Al</th>
+                                <th>Presenze</th>
+                                <th>Academic Coord.</th>
+                                <th>Course Mgr</th>
+                                <th>Course Asst</th>
+                                <th>Stato</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyAule">
+                            <!-- Caricamento dinamico da Fogli -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- PANNELLO FORZA ASSENTE / ISTRUTTORI -->
+            <div class="panel">
+                <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
+                <div class="table-responsive">
+                    <table id="tableIstruttori">
+                        <thead>
+                            <tr>
+                                <th>Tipo di Assenza</th>
+                                <th>Militare</th>
+                                <th>Dal</th>
+                                <th>Al</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bodyIstruttori">
+                            <!-- Caricamento dinamico da Fogli -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ⚠️ METTI QUI I TUOI DUE LINK CSV GENERATI DA GOOGLE FOGLI
+    const LINK_CSV_AULE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=1402761773&single=true&output=csv";
+    const LINK_CSV_ISTRUTTORI = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=87992488&single=true&output=csv";
+
+    function verificaPassword() {
+        const password = document.getElementById('passwordInput').value;
+        if (password === 'mammantonio') {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+            document.body.style.alignItems = 'stretch';
+            avviaDashboard();
+        } else {
+            document.getElementById('errorMsg').style.display = 'block';
+        }
+    }
+
+    function avviaDashboard() {
+        aggiornaOrologio();
+        setInterval(aggiornaOrologio, 1000);
+        caricaDatiMonitor();
+        // Auto-aggiornamento dello schermo ogni 30 secondi
+        setInterval(caricaDatiMonitor, 30000);
+    }
+
+    function aggiornaOrologio() {
+        const ora = new Date();
+        document.getElementById('liveClock').innerText = ora.toLocaleTimeString('it-IT');
+    }
+
+    async function caricaDatiMonitor() {
+        try {
+            const resAule = await fetch(LINK_CSV_AULE);
+            const dataAule = await resAule.text();
+            renderTabellaAule(dataAule);
+
+            const resIstr = await fetch(LINK_CSV_ISTRUTTORI);
+            const dataIstr = await resIstr.text();
+            renderTabellaIstruttori(dataIstr);
+        } catch (error) {
+            console.error("Errore nel caricamento dei dati:", error);
+        }
+    }
+
+    function renderTabellaAule(csvText) {
+        const righe = csvText.split(/\r?\n/);
+        const tbody = document.getElementById('bodyAule');
+        tbody.innerHTML = "";
+
+        for (let i = 1; i < righe.length; i++) {
+            if (!righe[i]) continue;
+            const col = righe[i].split(',');
+            if (col.length < 10) continue;
+
+            const statoCamp = col[9].toUpperCase().trim();
+            let badgeClass = "libera";
+            let dot = "🟢";
+            if(statoCamp === "OCCUPATA" || statoCamp === "OCCUPATO") {
+                badgeClass = "occupata";
+                dot = "🔴";
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td style="font-weight:600; color:#fff;">${col[0]}</td>
+                    <td style="color:var(--text-muted);">${col[1]}</td>
+                    <td style="font-weight:600; color:var(--accent-gold);">${col[2] || '-'}</td>
+                    <td>${col[3] || '-'}</td>
+                    <td>${col[4] || '-'}</td>
+                    <td>${col[5] || '0'}</td>
+                    <td>${col[6] || '-'}</td>
+                    <td>${col[7] || '-'}</td>
+                    <td>${col[8] || '-'}</td>
+                    <td><span class="badge ${badgeClass}">${dot} ${statoCamp}</span></td>
+                </tr>
+            `;
+        }
+    }
+
+    function renderTabellaIstruttori(csvText) {
+        const righe = csvText.split(/\r?\n/);
+        const tbody = document.getElementById('bodyIstruttori');
+        tbody.innerHTML = "";
+
+        for (let i = 1; i < righe.length; i++) {
+            if (!righe[i]) continue;
+            const col = righe[i].split(',');
+            if (col.length < 4) continue;
+
+            const assenza = col[0].toUpperCase().trim();
+            let badgeClass = "assente";
+            let icon = "⚠️";
+            let displayAssenza = col[0];
+
+            if (assenza === "IN SEDE" || assenza === "PRESENTE" || assenza === "") {
+                badgeClass = "insede";
+                icon = "🛡️";
+                displayAssenza = "IN SEDE";
+            } else if (assenza === "LICENZA") {
+                badgeClass = "licenza";
+                icon = "🏖️";
+            } else if (assenza === "MISSIONE") {
+                badgeClass = "missione";
+                icon = "✈️";
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td><span class="badge ${badgeClass}">${icon} ${displayAssenza}</span></td>
+                    <td style="font-weight:600; color:#fff;">${col[1]}</td>
+                    <td>${col[2] || '-'}</td>
+                    <td>${col[3] || '-'}</td>
+                </tr>
+            `;
+        }
+    }
+</script>
+</body>
+</html>
