@@ -21,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 15px; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Schermata Login */
+        /* Login */
         #loginScreen { background: rgba(16, 22, 42, 0.95); padding: 30px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.4); text-align: center; margin: 8vh auto 0 auto; max-width: 380px; width: 100%; }
         .lock-icon { font-size: 2.5rem; margin-bottom: 10px; display: inline-block; }
         #loginScreen h2 { margin-bottom: 20px; color: var(--text-main); font-size: 1.2rem; text-transform: uppercase; }
@@ -30,28 +30,27 @@
         .login-btn { background: linear-gradient(135deg, #b8921a, var(--accent-gold)); color: #05050a; font-weight: 700; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
         .err-msg { color: var(--danger); font-size: 0.8rem; margin-top: 10px; display: none; }
 
-        /* Contenuto Dashboard */
+        /* Dashboard */
         #dashboardContent { display: none; width: 100%; height: calc(100vh - 30px); flex-direction: column; }
         header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; }
         header h1 { font-size: 1.5rem; color: var(--text-main); font-weight: 700; }
         header h1 span { color: var(--accent-gold); font-weight: 400; }
         .clock { font-size: 1.3rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
 
-        /* Contenitore Diapositive */
         .slide-container { flex-grow: 1; position: relative; width: 100%; }
         .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
         .panel.active { opacity: 1; pointer-events: auto; }
         
         .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 15px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; }
 
-        /* Configurazione Tabelle - Aumentato Font Generale */
+        /* Tabelle */
         .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; color: #e5e7eb; table-layout: fixed; }
         th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 10px 6px; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; border-bottom: 2px solid rgba(255,255,255,0.1); }
         td { padding: 9px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         tr:hover { background: rgba(255,255,255,0.02); }
 
-        /* Dimensionamento colonne Slide 1 (Aule) */
+        /* Colonne Slide 1 */
         #tableAule th:nth-child(1), #tableAule td:nth-child(1) { width: 13%; } 
         #tableAule th:nth-child(2), #tableAule td:nth-child(2) { width: 6%; }  
         #tableAule th:nth-child(3), #tableAule td:nth-child(3) { width: 12%; } 
@@ -63,16 +62,15 @@
         #tableAule th:nth-child(9), #tableAule td:nth-child(9) { width: 16%; } 
         #tableAule th:nth-child(10), #tableAule td:nth-child(10) { width: 10%; } 
 
-        /* Layout sdoppiato per Slide 2 (Istruttori) */
+        /* Layout sdoppiato Slide 2 */
         .split-tables-container { display: flex; gap: 20px; width: 100%; height: 100%; }
         .split-column { width: 50%; display: flex; flex-direction: column; }
 
-        /* Indicatori delle Pagine */
         .dots-indicator { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-shrink: 0; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); }
         .dot.active { background: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
 
-        /* Badge di Stato */
+        /* Badge */
         .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
         .badge.libera { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge.occupata { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
@@ -80,10 +78,12 @@
         .badge.licenza { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
         .badge.missione { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
         .badge.assente { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .badge.pianificato { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body>
 
+    <!-- LOGIN -->
     <div id="loginScreen">
         <span class="lock-icon">🦅</span>
         <h2>Training Department <span>Operational Dashboard</span></h2>
@@ -92,6 +92,7 @@
         <div id="errorMsg" class="err-msg">Password errata.</div>
     </div>
 
+    <!-- DASHBOARD -->
     <div id="dashboardContent">
         <header>
             <h1>Training Dept. | <span>Operational Board</span></h1>
@@ -99,6 +100,7 @@
         </header>
 
         <div class="slide-container">
+            <!-- SCHERMATA 1 -->
             <div class="panel active" id="slideAule">
                 <div class="panel-title">🏛️ Monitoraggio Aree Addestrative & Aule</div>
                 <div class="table-responsive">
@@ -118,11 +120,13 @@
                             </tr>
                         </thead>
                         <tbody id="bodyAule">
-                            </tbody>
+                            <!-- Dinamico -->
+                        </tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- SCHERMATA 2: ISTRUTTORI POTENZIATA -->
             <div class="panel" id="slideIstruttori">
                 <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
                 <div class="split-tables-container">
@@ -131,12 +135,11 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 30%;">Stato</th>
-                                    <th style="width: 70%;">Militare</th>
+                                    <th style="width: 32%;">Stato Attuale</th>
+                                    <th style="width: 68%;">Militare / Pianificazione</th>
                                 </tr>
                             </thead>
-                            <tbody id="bodyIstruttoriSinistra">
-                                </tbody>
+                            <tbody id="bodyIstruttoriSinistra"></tbody>
                         </table>
                     </div>
 
@@ -144,12 +147,11 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th style="width: 30%;">Stato</th>
-                                    <th style="width: 70%;">Militare</th>
+                                    <th style="width: 32%;">Stato Attuale</th>
+                                    <th style="width: 68%;">Militare / Pianificazione</th>
                                 </tr>
                             </thead>
-                            <tbody id="bodyIstruttoriDestra">
-                                </tbody>
+                            <tbody id="bodyIstruttoriDestra"></tbody>
                         </table>
                     </div>
 
@@ -263,6 +265,21 @@
         }
     }
 
+    // NUOVA LOGICA INTELLIGENTE DI PARSING DELLE DATE
+    function analizzaStringaData(str) {
+        if (!str) return null;
+        // Pulisce la stringa ed estrae i numeri
+        const parti = str.trim().split(/[-/]/);
+        if (parti.length < 2) return null;
+        
+        const giorno = parseInt(parti[0], 10);
+        const mese = parseInt(parti[1], 10) - 1; // I mesi in JS vanno da 0 a 11
+        // Se non viene specificato l'anno, assume l'anno corrente
+        const anno = parti[2] ? (parti[2].length === 2 ? 2000 + parseInt(parti[2], 10) : parseInt(parti[2], 10)) : new Date().getFullYear();
+        
+        return new Date(anno, mese, giorno, 0, 0, 0);
+    }
+
     function renderTabellaIstruttori(csvText) {
         const righe = csvText.split(/\r?\n/);
         const tbodySinistra = document.getElementById('bodyIstruttoriSinistra');
@@ -271,7 +288,6 @@
         tbodySinistra.innerHTML = "";
         tbodyDestra.innerHTML = "";
 
-        // Filtra le righe valide
         const righeValide = [];
         for (let i = 1; i < righe.length; i++) {
             if (!righe[i]) continue;
@@ -279,34 +295,66 @@
             if (col.length >= 2) righeValide.push(col);
         }
 
-        // Distribuisci nelle due colonne (max 9 a sinistra, il resto a destra)
+        const oggi = new Date();
+        oggi.setHours(0,0,0,0); // Allinea a mezzanotte per i confronti
+
         righeValide.forEach((col, index) => {
-            const assenza = col[0].toUpperCase().trim();
-            let badgeClass = "assente";
-            let icon = "⚠️";
-            let displayAssenza = col[0];
+            const tipoAssenzaTabella = col[0].toUpperCase().trim();
+            const militare = col[1];
+            const strDal = col[2] ? col[2].trim() : '';
+            const strAl = col[3] ? col[3].trim() : '';
 
-            if (assenza === "IN SEDE" || assenza === "PRESENTE" || assenza === "") {
-                badgeClass = "insede";
-                icon = "🛡️";
-                displayAssenza = "IN SEDE";
-            } else if (assenza === "LICENZA") {
-                badgeClass = "licenza";
-                icon = "🏖️";
-            } else if (assenza === "MISSIONE") {
-                badgeClass = "missione";
-                icon = "✈️";
+            const dataDal = analizzaStringaData(strDal);
+            const dataAl = analizzaStringaData(strAl);
+
+            // Determinazione dinamica dello stato reale ad oggi
+            let badgeClass = "insede";
+            let icon = "🛡️";
+            let displayStato = "IN SEDE";
+            let infoPianificazione = "";
+
+            // Se ci sono date impostate nel foglio, calcola la situazione temporale
+            if (dataDal && dataAl) {
+                if (oggi >= dataDal && oggi <= dataAl) {
+                    // Siamo dentro il periodo dell'assenza
+                    displayStato = tipoAssenzaTabella === "" ? "ASSENTE" : tipoAssenzaTabella;
+                    if (displayStato === "LICENZA") { badgeClass = "licenza"; icon = "🏖️"; }
+                    else if (displayStato === "MISSIONE") { badgeClass = "missione"; icon = "✈️"; }
+                    else { badgeClass = "assente"; icon = "⚠️"; }
+                    
+                    infoPianificazione = `<span style="color:var(--text-muted); font-size:0.75rem; display:block;">Periodo: dal ${strDal} al ${strAl}</span>`;
+                } 
+                else if (oggi < dataDal) {
+                    // L'assenza è pianificata per il futuro! L'istruttore ad oggi è ancora IN SEDE
+                    badgeClass = "insede";
+                    icon = "🛡️";
+                    displayStato = "IN SEDE";
+                    infoPianificazione = `<span style="color:#818cf8; font-size:0.72rem; display:block;">📅 Prox: ${tipoAssenzaTabella} (${strDal} - ${strAl})</span>`;
+                }
+                else if (oggi > dataAl) {
+                    // L'assenza è scaduta, l'istruttore è rientrato in sede
+                    badgeClass = "insede";
+                    icon = "🛡️";
+                    displayStato = "IN SEDE";
+                    infoPianificazione = "";
+                }
+            } else {
+                // Se non ci sono date ma nel foglio è scritto esplicitamente LICENZA o MISSIONE, mantienilo fisso
+                if (tipoAssenzaTabella !== "IN SEDE" && tipoAssenzaTabella !== "PRESENTE" && tipoAssenzaTabella !== "") {
+                    displayStato = tipoAssenzaTabella;
+                    if (displayStato === "LICENZA") { badgeClass = "licenza"; icon = "🏖️"; }
+                    else if (displayStato === "MISSIONE") { badgeClass = "missione"; icon = "✈️"; }
+                    else { badgeClass = "assente"; icon = "⚠️"; }
+                }
             }
-
-            // Nota: Mostriamo solo Stato e Militare per ottimizzare la larghezza su 1024x768, 
-            // ma se c'è un rientro (col[3]) lo iniettiamo accanto allo stato per non perdere info importanti.
-            let infoData = col[3] ? ` (Fino al: ${col[3]})` : '';
-            if(badgeClass === "insede") infoData = '';
 
             const stringaRiga = `
                 <tr>
-                    <td><span class="badge ${badgeClass}">${icon} ${displayAssenza}</span></td>
-                    <td style="font-weight:600; color:#fff; font-size:1rem;">${col[1]}${infoData}</td>
+                    <td><span class="badge ${badgeClass}">${icon} ${displayStato}</span></td>
+                    <td style="padding-top:4px; padding-bottom:4px;">
+                        <span style="font-weight:600; color:#fff; font-size:0.98rem; display:block;">${militare}</span>
+                        ${infoPianificazione}
+                    </td>
                 </tr>
             `;
 
