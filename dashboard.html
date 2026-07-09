@@ -21,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
         body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 15px; display: flex; flex-direction: column; overflow: hidden; }
         
-        /* Schermata Login - Adatta a schermi piccoli */
+        /* Schermata Login */
         #loginScreen { background: rgba(16, 22, 42, 0.95); padding: 30px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.4); text-align: center; margin: 8vh auto 0 auto; max-width: 380px; width: 100%; }
         .lock-icon { font-size: 2.5rem; margin-bottom: 10px; display: inline-block; }
         #loginScreen h2 { margin-bottom: 20px; color: var(--text-main); font-size: 1.2rem; text-transform: uppercase; }
@@ -30,46 +30,50 @@
         .login-btn { background: linear-gradient(135deg, #b8921a, var(--accent-gold)); color: #05050a; font-weight: 700; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
         .err-msg { color: var(--danger); font-size: 0.8rem; margin-top: 10px; display: none; }
 
-        /* Contenuto Dashboard - Ottimizzato 1024x768 */
+        /* Contenuto Dashboard */
         #dashboardContent { display: none; width: 100%; height: calc(100vh - 30px); flex-direction: column; }
-        header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; flex-shrink: 0; }
-        header h1 { font-size: 1.4rem; color: var(--text-main); font-weight: 700; }
+        header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; }
+        header h1 { font-size: 1.5rem; color: var(--text-main); font-weight: 700; }
         header h1 span { color: var(--accent-gold); font-weight: 400; }
-        .clock { font-size: 1.2rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        .clock { font-size: 1.3rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
 
         /* Contenitore Diapositive */
         .slide-container { flex-grow: 1; position: relative; width: 100%; }
         .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
         .panel.active { opacity: 1; pointer-events: auto; }
         
-        .panel-title { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 15px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; }
+        .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 15px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; }
 
-        /* Tabelle ultra-compatte per far stare 18 righe in 768px di altezza */
-        .table-responsive { overflow-y: auto; flex-grow: 1; width: 100%; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.82rem; color: #e5e7eb; table-layout: fixed; }
-        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 8px 6px; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; border-bottom: 2px solid rgba(255,255,255,0.1); }
-        td { padding: 7px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        /* Configurazione Tabelle - Aumentato Font Generale */
+        .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; color: #e5e7eb; table-layout: fixed; }
+        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 10px 6px; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        td { padding: 9px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         tr:hover { background: rgba(255,255,255,0.02); }
 
-        /* Dimensionamento colonne specifico per 1024x768 */
-        #tableAule th:nth-child(1), #tableAule td:nth-child(1) { width: 12%; } /* Aula */
-        #tableAule th:nth-child(2), #tableAule td:nth-child(2) { width: 7%; }  /* Posti */
-        #tableAule th:nth-child(3), #tableAule td:nth-child(3) { width: 11%; } /* Corso */
-        #tableAule th:nth-child(4), #tableAule td:nth-child(4) { width: 8%; }  /* Dal */
-        #tableAule th:nth-child(5), #tableAule td:nth-child(5) { width: 8%; }  /* Al */
-        #tableAule th:nth-child(6), #tableAule td:nth-child(6) { width: 8%; }  /* Presenze */
-        #tableAule th:nth-child(7), #tableAule td:nth-child(7) { width: 16%; } /* Acad Coord */
-        #tableAule th:nth-child(8), #tableAule td:nth-child(8) { width: 15%; } /* Course Mgr */
-        #tableAule th:nth-child(9), #tableAule td:nth-child(9) { width: 15%; } /* Course Asst */
-        #tableAule th:nth-child(10), #tableAule td:nth-child(10) { width: 13%; } /* Stato */
+        /* Dimensionamento colonne Slide 1 (Aule) */
+        #tableAule th:nth-child(1), #tableAule td:nth-child(1) { width: 13%; } 
+        #tableAule th:nth-child(2), #tableAule td:nth-child(2) { width: 6%; }  
+        #tableAule th:nth-child(3), #tableAule td:nth-child(3) { width: 12%; } 
+        #tableAule th:nth-child(4), #tableAule td:nth-child(4) { width: 7%; }  
+        #tableAule th:nth-child(5), #tableAule td:nth-child(5) { width: 7%; }  
+        #tableAule th:nth-child(6), #tableAule td:nth-child(6) { width: 7%; }  
+        #tableAule th:nth-child(7), #tableAule td:nth-child(7) { width: 16%; } 
+        #tableAule th:nth-child(8), #tableAule td:nth-child(8) { width: 16%; } 
+        #tableAule th:nth-child(9), #tableAule td:nth-child(9) { width: 16%; } 
+        #tableAule th:nth-child(10), #tableAule td:nth-child(10) { width: 10%; } 
+
+        /* Layout sdoppiato per Slide 2 (Istruttori) */
+        .split-tables-container { display: flex; gap: 20px; width: 100%; height: 100%; }
+        .split-column { width: 50%; display: flex; flex-direction: column; }
 
         /* Indicatori delle Pagine */
         .dots-indicator { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-shrink: 0; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); }
         .dot.active { background: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
 
-        /* Badge di Stato Rimpiccioliti */
-        .badge { padding: 3px 6px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
+        /* Badge di Stato */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
         .badge.libera { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
         .badge.occupata { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
         .badge.insede { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
@@ -121,19 +125,34 @@
 
             <div class="panel" id="slideIstruttori">
                 <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
-                <div class="table-responsive">
-                    <table id="tableIstruttori">
-                        <thead>
-                            <tr>
-                                <th style="width: 25%;">Tipo di Assenza</th>
-                                <th style="width: 35%;">Militare</th>
-                                <th style="width: 20%;">Dal</th>
-                                <th style="width: 20%;">Al</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bodyIstruttori">
-                            </tbody>
-                    </table>
+                <div class="split-tables-container">
+                    
+                    <div class="split-column">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Stato</th>
+                                    <th style="width: 70%;">Militare</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyIstruttoriSinistra">
+                                </tbody>
+                        </table>
+                    </div>
+
+                    <div class="split-column">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th style="width: 30%;">Stato</th>
+                                    <th style="width: 70%;">Militare</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bodyIstruttoriDestra">
+                                </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -165,8 +184,8 @@
         aggiornaOrologio();
         setInterval(aggiornaOrologio, 1000);
         caricaDatiMonitor();
-        setInterval(ruotaSchermate, 15000); // 15 secondi per slide
-        setInterval(caricaDatiMonitor, 60000); // Ricarica foglio ogni minuto
+        setInterval(ruotaSchermate, 15000); 
+        setInterval(caricaDatiMonitor, 60000); 
     }
 
     function aggiornaOrologio() {
@@ -246,14 +265,22 @@
 
     function renderTabellaIstruttori(csvText) {
         const righe = csvText.split(/\r?\n/);
-        const tbody = document.getElementById('bodyIstruttori');
-        tbody.innerHTML = "";
+        const tbodySinistra = document.getElementById('bodyIstruttoriSinistra');
+        const tbodyDestra = document.getElementById('bodyIstruttoriDestra');
+        
+        tbodySinistra.innerHTML = "";
+        tbodyDestra.innerHTML = "";
 
+        // Filtra le righe valide
+        const righeValide = [];
         for (let i = 1; i < righe.length; i++) {
             if (!righe[i]) continue;
             const col = righe[i].split(',');
-            if (col.length < 4) continue;
+            if (col.length >= 2) righeValide.push(col);
+        }
 
+        // Distribuisci nelle due colonne (max 9 a sinistra, il resto a destra)
+        righeValide.forEach((col, index) => {
             const assenza = col[0].toUpperCase().trim();
             let badgeClass = "assente";
             let icon = "⚠️";
@@ -271,15 +298,24 @@
                 icon = "✈️";
             }
 
-            tbody.innerHTML += `
+            // Nota: Mostriamo solo Stato e Militare per ottimizzare la larghezza su 1024x768, 
+            // ma se c'è un rientro (col[3]) lo iniettiamo accanto allo stato per non perdere info importanti.
+            let infoData = col[3] ? ` (Fino al: ${col[3]})` : '';
+            if(badgeClass === "insede") infoData = '';
+
+            const stringaRiga = `
                 <tr>
                     <td><span class="badge ${badgeClass}">${icon} ${displayAssenza}</span></td>
-                    <td style="font-weight:600; color:#fff;">${col[1]}</td>
-                    <td>${col[2] || '-'}</td>
-                    <td>${col[3] || '-'}</td>
+                    <td style="font-weight:600; color:#fff; font-size:1rem;">${col[1]}${infoData}</td>
                 </tr>
             `;
-        }
+
+            if (index < 9) {
+                tbodySinistra.innerHTML += stringaRiga;
+            } else {
+                tbodyDestra.innerHTML += stringaRiga;
+            }
+        });
     }
 </script>
 </body>
