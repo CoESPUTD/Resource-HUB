@@ -26,9 +26,8 @@
         .lock-icon { font-size: 2.5rem; margin-bottom: 10px; display: inline-block; }
         #loginScreen h2 { margin-bottom: 20px; color: var(--text-main); font-size: 1.2rem; text-transform: uppercase; }
         #loginScreen h2 span { color: var(--accent-gold); font-size: 0.85rem; display: block; margin-top: 5px; }
-        .pass-input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); background: rgba(10, 15, 29, 0.8); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 3px; }
+        .pass-input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(10, 15, 29, 0.8); color: white; text-align: center; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 3px; }
         .login-btn { background: linear-gradient(135deg, #b8921a, var(--accent-gold)); color: #05050a; font-weight: 700; width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; text-transform: uppercase; }
-        .err-msg { color: var(--danger); font-size: 0.8rem; margin-top: 10px; display: none; }
 
         /* Dashboard */
         #dashboardContent { display: none; width: 100%; height: calc(100vh - 30px); flex-direction: column; }
@@ -38,61 +37,42 @@
         .clock { font-size: 1.3rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
 
         .slide-container { flex-grow: 1; position: relative; width: 100%; }
-        .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
+        .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.4s ease-in-out; display: flex; flex-direction: column; }
         .panel.active { opacity: 1; pointer-events: auto; }
         
-        .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 15px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; }
+        .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; flex-shrink: 0; }
 
         /* Tabelle */
         .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem; color: #e5e7eb; table-layout: fixed; }
-        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 10px 6px; font-weight: 600; text-transform: uppercase; font-size: 0.8rem; border-bottom: 2px solid rgba(255,255,255,0.1); }
-        td { padding: 9px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        tr:hover { background: rgba(255,255,255,0.02); }
+        table { width: 100%; border-collapse: collapse; text-align: left; color: #e5e7eb; table-layout: fixed; }
+        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 8px 6px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); }
+        td { padding: 6px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* Colonne Slide 1 */
-        #tableAule th:nth-child(1), #tableAule td:nth-child(1) { width: 13%; } 
-        #tableAule th:nth-child(2), #tableAule td:nth-child(2) { width: 6%; }  
-        #tableAule th:nth-child(3), #tableAule td:nth-child(3) { width: 12%; } 
-        #tableAule th:nth-child(4), #tableAule td:nth-child(4) { width: 7%; }  
-        #tableAule th:nth-child(5), #tableAule td:nth-child(5) { width: 7%; }  
-        #tableAule th:nth-child(6), #tableAule td:nth-child(6) { width: 7%; }  
-        #tableAule th:nth-child(7), #tableAule td:nth-child(7) { width: 16%; } 
-        #tableAule th:nth-child(8), #tableAule td:nth-child(8) { width: 16%; } 
-        #tableAule th:nth-child(9), #tableAule td:nth-child(9) { width: 16%; } 
-        #tableAule th:nth-child(10), #tableAule td:nth-child(10) { width: 10%; } 
-
-        /* Layout sdoppiato Slide 2 */
-        .split-tables-container { display: flex; gap: 20px; width: 100%; height: 100%; }
+        /* Slide Istruttori - Layout e Font Dinamico */
+        #slideIstruttori table { font-size: 1rem; } /* Font base che verrà cambiato da JS */
+        .split-tables-container { display: flex; gap: 20px; width: 100%; flex-grow: 1; overflow: hidden; }
         .split-column { width: 50%; display: flex; flex-direction: column; }
 
         .dots-indicator { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-shrink: 0; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: 0.3s; }
         .dot.active { background: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
 
-        /* Badge */
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; }
-        .badge.libera { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .badge.occupata { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.3); }
+        .badge { padding: 3px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; font-size: 0.8em; }
         .badge.insede { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
         .badge.licenza { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
         .badge.missione { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
         .badge.assente { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-        .badge.pianificato { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); border: 1px solid rgba(255, 255, 255, 0.2); }
     </style>
 </head>
 <body>
 
-    <!-- LOGIN -->
     <div id="loginScreen">
         <span class="lock-icon">🦅</span>
-        <h2>Training Department <span>Operational Dashboard</span></h2>
+        <h2>Training Dept. <span>Operational Board</span></h2>
         <input type="password" id="passwordInput" class="pass-input" placeholder="PASSWORD" onkeydown="if(event.key==='Enter') verificaPassword()">
         <button onclick="verificaPassword()" class="login-btn">Accedi</button>
-        <div id="errorMsg" class="err-msg">Password errata.</div>
     </div>
 
-    <!-- DASHBOARD -->
     <div id="dashboardContent">
         <header>
             <h1>Training Dept. | <span>Operational Board</span></h1>
@@ -100,68 +80,27 @@
         </header>
 
         <div class="slide-container">
-            <!-- SCHERMATA 1 -->
-            <div class="panel active" id="slideAule">
-                <div class="panel-title">🏛️ Monitoraggio Aree Addestrative & Aule</div>
-                <div class="table-responsive">
-                    <table id="tableAule">
-                        <thead>
-                            <tr>
-                                <th>Aula</th>
-                                <th>Posti</th>
-                                <th>Corso</th>
-                                <th>Dal</th>
-                                <th>Al</th>
-                                <th>Pres.</th>
-                                <th>Acad. Coord.</th>
-                                <th>Course Mgr</th>
-                                <th>Course Asst</th>
-                                <th>Stato</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bodyAule">
-                            <!-- Dinamico -->
-                        </tbody>
-                    </table>
-                </div>
+            <div class="panel active" id="slideAuleA">
+                <div class="panel-title">🏛️ Aree Addestrative & Aule (1/2)</div>
+                <div class="table-responsive"><table id="tableAuleA"><thead><tr><th style="width:15%">Aula</th><th style="width:15%">Corso</th><th style="width:10%">Dal</th><th style="width:10%">Al</th><th style="width:8%">Pres.</th><th style="width:32%">Manager / Assistant</th><th style="width:10%">Stato</th></tr></thead><tbody id="bodyAuleA"></tbody></table></div>
             </div>
 
-            <!-- SCHERMATA 2: ISTRUTTORI POTENZIATA -->
+            <div class="panel" id="slideAuleB">
+                <div class="panel-title">🏛️ Aree Addestrative & Aule (2/2)</div>
+                <div class="table-responsive"><table id="tableAuleB"><thead><tr><th style="width:15%">Aula</th><th style="width:15%">Corso</th><th style="width:10%">Dal</th><th style="width:10%">Al</th><th style="width:8%">Pres.</th><th style="width:32%">Manager / Assistant</th><th style="width:10%">Stato</th></tr></thead><tbody id="bodyAuleB"></tbody></table></div>
+            </div>
+
             <div class="panel" id="slideIstruttori">
                 <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
                 <div class="split-tables-container">
-                    
-                    <div class="split-column">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 32%;">Stato Attuale</th>
-                                    <th style="width: 68%;">Militare / Pianificazione</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bodyIstruttoriSinistra"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="split-column">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width: 32%;">Stato Attuale</th>
-                                    <th style="width: 68%;">Militare / Pianificazione</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bodyIstruttoriDestra"></tbody>
-                        </table>
-                    </div>
-
+                    <div class="split-column"><table id="tableIstrSinistra"><thead><tr><th style="width:35%">Stato</th><th style="width:65%">Militare</th></tr></thead><tbody id="bodyIstrSinistra"></tbody></table></div>
+                    <div class="split-column"><table id="tableIstrDestra"><thead><tr><th style="width:35%">Stato</th><th style="width:65%">Militare</th></tr></thead><tbody id="bodyIstrDestra"></tbody></table></div>
                 </div>
             </div>
         </div>
 
         <div class="dots-indicator">
-            <div class="dot active" id="dot1"></div>
-            <div class="dot" id="dot2"></div>
+            <div class="dot active" id="dot1"></div><div class="dot" id="dot2"></div><div class="dot" id="dot3"></div>
         </div>
     </div>
 
@@ -169,201 +108,97 @@
     const LINK_CSV_AULE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=1402761773&single=true&output=csv";
     const LINK_CSV_ISTRUTTORI = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=87992488&single=true&output=csv";
 
-    let slideAttuale = 1;
-
     function verificaPassword() {
-        const password = document.getElementById('passwordInput').value;
-        if (password === 'mammantonio') {
+        if (document.getElementById('passwordInput').value === 'mammantonio') {
             document.getElementById('loginScreen').style.display = 'none';
             document.getElementById('dashboardContent').style.display = 'flex';
             avviaDashboard();
-        } else {
-            document.getElementById('errorMsg').style.display = 'block';
         }
     }
 
     function avviaDashboard() {
-        aggiornaOrologio();
-        setInterval(aggiornaOrologio, 1000);
+        setInterval(() => { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('it-IT'); }, 1000);
         caricaDatiMonitor();
-        setInterval(ruotaSchermate, 15000); 
-        setInterval(caricaDatiMonitor, 60000); 
-    }
-
-    function aggiornaOrologio() {
-        const ora = new Date();
-        document.getElementById('liveClock').innerText = ora.toLocaleTimeString('it-IT');
+        setInterval(caricaDatiMonitor, 60000);
+        
+        let fase = 1;
+        setInterval(() => {
+            const panels = ['slideAuleA', 'slideAuleB', 'slideIstruttori'];
+            panels.forEach(id => document.getElementById(id).classList.remove('active'));
+            [1,2,3].forEach(i => document.getElementById('dot'+i).classList.remove('active'));
+            
+            fase = fase < 3 ? fase + 1 : 1;
+            document.getElementById(panels[fase-1]).classList.add('active');
+            document.getElementById('dot'+fase).classList.add('active');
+        }, 13000);
     }
 
     async function caricaDatiMonitor() {
         try {
-            const resAule = await fetch(LINK_CSV_AULE);
-            const dataAule = await resAule.text();
-            renderTabellaAule(dataAule);
-
-            const resIstr = await fetch(LINK_CSV_ISTRUTTORI);
-            const dataIstr = await resIstr.text();
-            renderTabellaIstruttori(dataIstr);
-        } catch (error) {
-            console.error("Errore nel caricamento dei dati:", error);
-        }
+            const [resA, resI] = await Promise.all([fetch(LINK_CSV_AULE), fetch(LINK_CSV_ISTRUTTORI)]);
+            renderAule(await resA.text());
+            renderIstruttori(await resI.text());
+        } catch (e) { console.error(e); }
     }
 
-    function ruotaSchermate() {
-        const s1 = document.getElementById('slideAule');
-        const s2 = document.getElementById('slideIstruttori');
-        const d1 = document.getElementById('dot1');
-        const d2 = document.getElementById('dot2');
-
-        if (slideAttuale === 1) {
-            s1.classList.remove('active');
-            s2.classList.add('active');
-            d1.classList.remove('active');
-            d2.classList.add('active');
-            slideAttuale = 2;
-        } else {
-            s2.classList.remove('active');
-            s1.classList.add('active');
-            d2.classList.remove('active');
-            d1.classList.add('active');
-            slideAttuale = 1;
-        }
-    }
-
-    function renderTabellaAule(csvText) {
-        const righe = csvText.split(/\r?\n/);
-        const tbody = document.getElementById('bodyAule');
-        tbody.innerHTML = "";
-
-        for (let i = 1; i < righe.length; i++) {
-            if (!righe[i]) continue;
-            const col = righe[i].split(',');
-            if (col.length < 10) continue;
-
-            const statoCamp = col[9].toUpperCase().trim();
-            let badgeClass = "libera";
-            let dot = "🟢";
-            if(statoCamp === "OCCUPATA" || statoCamp === "OCCUPATO") {
-                badgeClass = "occupata";
-                dot = "🔴";
-            }
-
-            tbody.innerHTML += `
-                <tr>
-                    <td style="font-weight:700; color:#fff;">${col[0]}</td>
-                    <td>${col[1]}</td>
-                    <td style="color:var(--accent-gold); font-weight:600;">${col[2] || '-'}</td>
-                    <td>${col[3] || '-'}</td>
-                    <td>${col[4] || '-'}</td>
-                    <td>${col[5] || '0'}</td>
-                    <td>${col[6] || '-'}</td>
-                    <td>${col[7] || '-'}</td>
-                    <td>${col[8] || '-'}</td>
-                    <td><span class="badge ${badgeClass}">${dot} ${statoCamp}</span></td>
-                </tr>
-            `;
-        }
-    }
-
-    // NUOVA LOGICA INTELLIGENTE DI PARSING DELLE DATE
-    function analizzaStringaData(str) {
-        if (!str) return null;
-        // Pulisce la stringa ed estrae i numeri
-        const parti = str.trim().split(/[-/]/);
-        if (parti.length < 2) return null;
+    function renderAule(csv) {
+        const rows = csv.split(/\r?\n/).filter(r => r.split(',').length >= 10).slice(1);
+        const bodyA = document.getElementById('bodyAuleA'), bodyB = document.getElementById('bodyAuleB');
+        bodyA.innerHTML = ""; bodyB.innerHTML = "";
         
-        const giorno = parseInt(parti[0], 10);
-        const mese = parseInt(parti[1], 10) - 1; // I mesi in JS vanno da 0 a 11
-        // Se non viene specificato l'anno, assume l'anno corrente
-        const anno = parti[2] ? (parti[2].length === 2 ? 2000 + parseInt(parti[2], 10) : parseInt(parti[2], 10)) : new Date().getFullYear();
-        
-        return new Date(anno, mese, giorno, 0, 0, 0);
-    }
-
-    function renderTabellaIstruttori(csvText) {
-        const righe = csvText.split(/\r?\n/);
-        const tbodySinistra = document.getElementById('bodyIstruttoriSinistra');
-        const tbodyDestra = document.getElementById('bodyIstruttoriDestra');
-        
-        tbodySinistra.innerHTML = "";
-        tbodyDestra.innerHTML = "";
-
-        const righeValide = [];
-        for (let i = 1; i < righe.length; i++) {
-            if (!righe[i]) continue;
-            const col = righe[i].split(',');
-            if (col.length >= 2) righeValide.push(col);
-        }
-
-        const oggi = new Date();
-        oggi.setHours(0,0,0,0); // Allinea a mezzanotte per i confronti
-
-        righeValide.forEach((col, index) => {
-            const tipoAssenzaTabella = col[0].toUpperCase().trim();
-            const militare = col[1];
-            const strDal = col[2] ? col[2].trim() : '';
-            const strAl = col[3] ? col[3].trim() : '';
-
-            const dataDal = analizzaStringaData(strDal);
-            const dataAl = analizzaStringaData(strAl);
-
-            // Determinazione dinamica dello stato reale ad oggi
-            let badgeClass = "insede";
-            let icon = "🛡️";
-            let displayStato = "IN SEDE";
-            let infoPianificazione = "";
-
-            // Se ci sono date impostate nel foglio, calcola la situazione temporale
-            if (dataDal && dataAl) {
-                if (oggi >= dataDal && oggi <= dataAl) {
-                    // Siamo dentro il periodo dell'assenza
-                    displayStato = tipoAssenzaTabella === "" ? "ASSENTE" : tipoAssenzaTabella;
-                    if (displayStato === "LICENZA") { badgeClass = "licenza"; icon = "🏖️"; }
-                    else if (displayStato === "MISSIONE") { badgeClass = "missione"; icon = "✈️"; }
-                    else { badgeClass = "assente"; icon = "⚠️"; }
-                    
-                    infoPianificazione = `<span style="color:var(--text-muted); font-size:0.75rem; display:block;">Periodo: dal ${strDal} al ${strAl}</span>`;
-                } 
-                else if (oggi < dataDal) {
-                    // L'assenza è pianificata per il futuro! L'istruttore ad oggi è ancora IN SEDE
-                    badgeClass = "insede";
-                    icon = "🛡️";
-                    displayStato = "IN SEDE";
-                    infoPianificazione = `<span style="color:#818cf8; font-size:0.72rem; display:block;">📅 Prox: ${tipoAssenzaTabella} (${strDal} - ${strAl})</span>`;
-                }
-                else if (oggi > dataAl) {
-                    // L'assenza è scaduta, l'istruttore è rientrato in sede
-                    badgeClass = "insede";
-                    icon = "🛡️";
-                    displayStato = "IN SEDE";
-                    infoPianificazione = "";
-                }
-            } else {
-                // Se non ci sono date ma nel foglio è scritto esplicitamente LICENZA o MISSIONE, mantienilo fisso
-                if (tipoAssenzaTabella !== "IN SEDE" && tipoAssenzaTabella !== "PRESENTE" && tipoAssenzaTabella !== "") {
-                    displayStato = tipoAssenzaTabella;
-                    if (displayStato === "LICENZA") { badgeClass = "licenza"; icon = "🏖️"; }
-                    else if (displayStato === "MISSIONE") { badgeClass = "missione"; icon = "✈️"; }
-                    else { badgeClass = "assente"; icon = "⚠️"; }
-                }
-            }
-
-            const stringaRiga = `
-                <tr>
-                    <td><span class="badge ${badgeClass}">${icon} ${displayStato}</span></td>
-                    <td style="padding-top:4px; padding-bottom:4px;">
-                        <span style="font-weight:600; color:#fff; font-size:0.98rem; display:block;">${militare}</span>
-                        ${infoPianificazione}
-                    </td>
-                </tr>
-            `;
-
-            if (index < 9) {
-                tbodySinistra.innerHTML += stringaRiga;
-            } else {
-                tbodyDestra.innerHTML += stringaRiga;
-            }
+        rows.forEach((r, i) => {
+            const c = r.split(',');
+            const stato = c[9].toUpperCase().trim();
+            const badge = stato.includes("OCCUP") ? `<span class="badge assente">🔴 ${stato}</span>` : `<span class="badge insede">🟢 ${stato}</span>`;
+            const html = `<tr><td><b>${c[0]}</b></td><td>${c[2]||'-'}</td><td>${c[3]||'-'}</td><td>${c[4]||'-'}</td><td>${c[5]||'0'}</td><td style="font-size:0.85em">${c[7]} / ${c[8]}</td><td>${badge}</td></tr>`;
+            if (i < 8) bodyA.innerHTML += html; else bodyB.innerHTML += html;
         });
+    }
+
+    function renderIstruttori(csv) {
+        const rows = csv.split(/\r?\n/).filter(r => r.split(',').length >= 2).slice(1);
+        const bodyS = document.getElementById('bodyIstrSinistra'), bodyD = document.getElementById('bodyIstrDestra');
+        bodyS.innerHTML = ""; bodyD.innerHTML = "";
+        
+        const oggi = new Date(); oggi.setHours(0,0,0,0);
+        
+        rows.forEach((r, i) => {
+            const c = r.split(','), statoTab = c[0].toUpperCase().trim(), mil = c[1], dDal = parseDate(c[2]), dAl = parseDate(c[3]);
+            let bCl = "insede", icon = "🛡️", st = "IN SEDE", sub = "";
+
+            if (dDal && dAl) {
+                if (oggi >= dDal && oggi <= dAl) {
+                    st = statoTab || "ASSENTE";
+                    if (st === "LICENZA") { bCl = "licenza"; icon = "🏖️"; }
+                    else if (st === "MISSIONE") { bCl = "missione"; icon = "✈️"; }
+                    else { bCl = "assente"; icon = "⚠️"; }
+                    sub = `Dal ${c[2]} al ${c[3]}`;
+                } else if (oggi < dDal) {
+                    sub = `📅 Prox: ${statoTab} (${c[2]})`;
+                }
+            } else if (statoTab && statoTab !== "IN SEDE") {
+                st = statoTab; bCl = st === "LICENZA" ? "licenza" : (st === "MISSIONE" ? "missione" : "assente");
+                icon = st === "LICENZA" ? "🏖️" : (st === "MISSIONE" ? "✈️" : "⚠️");
+            }
+
+            const html = `<tr><td><span class="badge ${bCl}">${icon} ${st}</span></td><td><b>${mil}</b><br><small style="font-size:0.75em; opacity:0.7">${sub}</small></td></tr>`;
+            if (i < Math.ceil(rows.length / 2)) bodyS.innerHTML += html; else bodyD.innerHTML += html;
+        });
+
+        // 🚀 LOGICA AUTO-FIT FONT
+        const maxRows = Math.ceil(rows.length / 2);
+        const containerHeight = 550; // Pixel disponibili circa su 768px totali
+        let dynamicSize = Math.min(1.4, containerHeight / (maxRows * 35)); // Calcolo empirico
+        
+        // Applica il font calcolato alle tabelle istruttori
+        document.getElementById('tableIstrSinistra').style.fontSize = dynamicSize + "rem";
+        document.getElementById('tableIstrDestra').style.fontSize = dynamicSize + "rem";
+    }
+
+    function parseDate(s) {
+        if (!s) return null;
+        const p = s.trim().split(/[-/]/);
+        return p.length < 2 ? null : new Date(p[2] || new Date().getFullYear(), p[1]-1, p[0]);
     }
 </script>
 </body>
