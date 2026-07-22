@@ -221,11 +221,10 @@
             const mil = c[1];
             if (!mil) return;
 
-            // Di base il militare è considerato IN SEDE (badge verde)
+            // Stato di default: IN SEDE
             let statoAttuale = "IN SEDE";
             let tipoBase = c[0] ? c[0].toUpperCase().replace("IN ", "").trim() : "IN SEDE";
             
-            // Se lo stato base è una missione/assenza specifica, mantienila
             if (tipoBase !== "IN SEDE" && tipoBase !== "LICENZA") {
                 statoAttuale = tipoBase;
             }
@@ -234,11 +233,14 @@
             const pianificazioni = [];
 
             for (let colIdx = 2; colIdx < c.length; colIdx += 3) {
-                let tipoEvento = c[colIdx] ? c[colIdx].toUpperCase().replace("IN ", "").trim() : tipoBase;
-                if (!tipoEvento || tipoEvento === "IN SEDE") tipoEvento = "LICENZA";
-
                 const sDal = c[colIdx + 1];
                 const sAl = c[colIdx + 2];
+
+                // Se mancano le date, ignora questa colonna e non forzare licenze "fantasmi"
+                if (!sDal && !sAl) continue;
+
+                let tipoEvento = c[colIdx] ? c[colIdx].toUpperCase().replace("IN ", "").trim() : "LICENZA";
+                if (!tipoEvento || tipoEvento === "IN SEDE") tipoEvento = "LICENZA";
 
                 const dDal = parseDate(sDal);
                 const dAl = parseDate(sAl);
@@ -255,8 +257,20 @@
                             dataObj: dDal
                         });
                     }
+                } else if (dDal && !dAl) { // Caso in cui c'è solo la data di inizio
+                    if (oggi.getTime() === dDal.getTime()) {
+                        statoAttuale = tipoEvento;
+                        periodoAttuale = `${sDal}`;
+                    } else if (oggi < dDal) {
+                        pianificazioni.push({
+                            stato: tipoEvento,
+                            dal: sDal,
+                            al: "",
+                            dataObj: dDal
+                        });
+                    }
                 }
-            }
+            } // fine del for
 
             listaMilitari.push({
                 nome: mil,
