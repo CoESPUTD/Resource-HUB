@@ -286,7 +286,8 @@
 
             if (st === "LICENZA") { bCl = "licenza"; icon = "🏖️"; }
             else if (st === "MISSIONE") { bCl = "missione"; icon = "✈️"; }
-            else if (st !== "IN SEDE") { bCl = "assente"; icon = "⚠️"; }
+            else if (st === "IN SEDE" || st === "SEDE") { bCl = "insede"; icon = "🛡️"; }
+            else { bCl = "assente"; icon = "⚠️"; }
 
             if (m.periodoAttuale) {
                 subHtml += `<span class="sub-plan">🗓️ In corso: ${m.periodoAttuale}</span>`;
