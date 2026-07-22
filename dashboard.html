@@ -317,11 +317,31 @@
         document.getElementById('tableIstrDestra').style.fontSize = dynamicSize + "rem";
     }
 
-   function parseDate(s) {
+    function parseCsvLine(text) {
+        let delimiter = text.includes('\t') ? '\t' : ',';
+        let result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === delimiter && !inQuotes) {
+                result.push(cur.trim());
+                cur = '';
+            } else {
+                cur += char;
+            }
+        }
+        result.push(cur.trim());
+        return result.map(s => s.replace(/^"|"$/g, ''));
+    }
+
+    function parseDate(s) {
         if (!s) return null;
         const p = s.trim().split(/[-/.]/);
         return p.length < 2 ? null : new Date(p[2] || new Date().getFullYear(), p[1]-1, p[0]);
     }
-</script>   
+</script>
 </body>
 </html>
