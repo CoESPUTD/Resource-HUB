@@ -109,7 +109,7 @@
         .news-panel h3 { font-size: 0.85rem; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
         
         .ticker-container { width: 100%; height: 160px; overflow: hidden; position: relative; background: #000; border-radius: 6px; border: 1px solid #222; }
-        .ticker-wrapper { position: absolute; width: 100%; padding: 10px; animation: ticker-vertical 25s linear infinite; }
+        .ticker-wrapper { position: absolute; width: 100%; padding: 10px; animation: ticker-vertical 20s linear infinite; }
         .ticker-wrapper:hover { animation-play-state: paused; }
         
         .news-item { margin-bottom: 18px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px; }
@@ -206,7 +206,6 @@
     </div>
 
 <script>
-    // MENTI QUI IL TUO LINK CSV PERSONALE DEL TUO GOOGLE FOGLI
     const LINK_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?output=csv";
 
     const translations = {
@@ -221,6 +220,26 @@
     let databaseVideoFissi = [];
     let databaseNotizie = [];
 
+    // Helper per separare le righe CSV gestendo correttamente virgolette e virgole
+    function parseCSVLine(line) {
+        let result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+            let char = line[i];
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                result.push(cur.trim().replace(/^"|"$/g, ''));
+                cur = '';
+            } else {
+                cur += char;
+            }
+        }
+        result.push(cur.trim().replace(/^"|"$/g, ''));
+        return result;
+    }
+
     async function caricaDatiDaGoogle() {
         try {
             const response = await fetch(LINK_CSV);
@@ -233,8 +252,8 @@
             databaseNotizie = [];
 
             for (let i = 1; i < righe.length; i++) {
-                if (!righe[i]) continue;
-                const colonne = righe[i].split(',');
+                if (!righe[i] || !righe[i].trim()) continue;
+                const colonne = parseCSVLine(righe[i]);
                 if (colonne.length < 7) continue;
 
                 const idCorso = colonne[0].toLowerCase().trim();
@@ -268,10 +287,14 @@
                     }
                 }
             }
+
             renderLogisticaFissa();
             renderPlaylistVideo(databaseVideoFissi);
             renderNotizieTicker();
-            new QRCode(document.getElementById("qrcode"), { text: window.location.href, width: 140, height: 140, colorDark: "#0a0a0a", correctLevel: QRCode.CorrectLevel.H });
+            
+            const qrContainer = document.getElementById("qrcode");
+            qrContainer.innerHTML = "";
+            new QRCode(qrContainer, { text: window.location.href, width: 140, height: 140, colorDark: "#0a0a0a", correctLevel: QRCode.CorrectLevel.H });
         } catch (error) {
             console.error("Errore nel caricamento del CSV:", error);
         }
@@ -288,7 +311,6 @@
             return;
         }
 
-        // Attiva automaticamente l'embed del primo video della lista
         attivaVideoEmbed(listaVideo[0].url);
 
         listaVideo.forEach((v, index) => {
@@ -308,7 +330,6 @@
         const playerWrapper = document.getElementById('playerWrapper');
         let embedUrl = urlOriginario;
 
-        // Trasforma in automatico i link standard di Drive in modalità preview pulita
         if (urlOriginario.includes("drive.google.com")) {
             let idFile = "";
             if (urlOriginario.includes("/file/d/")) {
@@ -319,9 +340,14 @@
             if (idFile) {
                 embedUrl = `https://drive.google.com/file/d/${idFile}/preview`;
             }
+        } else if (urlOriginario.includes("youtube.com/watch?v=")) {
+            let idVideo = urlOriginario.split("v=")[1].split("&")[0];
+            embedUrl = `https://www.youtube.com/embed/${idVideo}`;
+        } else if (urlOriginario.includes("youtu.be/")) {
+            let idVideo = urlOriginario.split("youtu.be/")[1].split("?")[0];
+            embedUrl = `https://www.youtube.com/embed/${idVideo}`;
         }
 
-        // Genera il frame isolato per non far vedere file o scritte sotto
         playerWrapper.innerHTML = `<iframe src="${embedUrl}" width="100%" height="100%" style="border:none;" allow="autoplay" allowfullscreen></iframe>`;
     }
 
@@ -461,12 +487,11 @@
         if(inputVal) sbloccaCorso();
         
         document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-        if(event && event.currentTarget) event.currentTarget.classList.add('active');
+        if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
     }
 
-    window.onload = function() {
-        caricaDatiDaGoogle();
-    };
+    // Caricamento immediato all'avvio
+    document.addEventListener("DOMContentLoaded", caricaDatiDaGoogle);
 </script>
 </body>
 </html>
