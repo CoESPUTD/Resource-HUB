@@ -4,328 +4,304 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CoESPU - Operational Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0a0f1d;
-            --panel-bg: rgba(16, 22, 42, 0.9);
-            --accent-gold: #d4af37;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --success: #10b981;
-            --danger: #ef4444;
-            --warning: #f59e0b;
-            --info: #3b82f6;
+            --bg-color: #080808;
+            --panel-bg: rgba(20, 20, 20, 0.85);
+            --accent: #d4af37;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(212, 175, 55, 0.25);
+            --green: #22c55e;
+            --red: #ef4444;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-dark); color: var(--text-main); min-height: 100vh; padding: 15px; display: flex; flex-direction: column; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-        /* Dashboard Content */
-        #dashboardContent { width: 100%; height: calc(100vh - 30px); display: flex; flex-direction: column; }
-        header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; }
-        header h1 { font-size: 1.5rem; color: var(--text-main); font-weight: 700; }
-        header h1 span { color: var(--accent-gold); font-weight: 400; }
-        .clock { font-size: 1.3rem; font-weight: 600; color: var(--accent-gold); background: rgba(212, 175, 55, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.2); }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
 
-        .slide-container { flex-grow: 1; position: relative; width: 100%; }
-        .panel { background: var(--panel-bg); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); padding: 15px; position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 0.5s ease-in-out; display: flex; flex-direction: column; }
-        .panel.active { opacity: 1; pointer-events: auto; }
-        
-        .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; flex-shrink: 0; }
+        h1 {
+            font-size: 1.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-        /* Tabelle - Layout Dinamico */
-        .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
-        table { width: 100%; border-collapse: collapse; text-align: left; color: #e5e7eb; table-layout: auto; }
-        th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 6px 6px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); font-size: 0.78em; white-space: nowrap; }
-        td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; vertical-align: middle; }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-        .col-corso { font-weight: 600; color: #ffffff; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
 
-        /* Slide Istruttori */
-        .split-tables-container { display: flex; gap: 20px; width: 100%; flex-grow: 1; overflow: hidden; }
-        .split-column { width: 50%; display: flex; flex-direction: column; }
+        @media (min-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
-        .dots-indicator { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-shrink: 0; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: 0.3s; }
-        .dot.active { background: var(--accent-gold); box-shadow: 0 0 6px var(--accent-gold); }
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        }
 
-        .badge { padding: 2px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-flex; align-items: center; gap: 4px; font-size: 0.8em; white-space: nowrap; }
-        .badge.insede { background: rgba(16, 185, 129, 0.15); color: var(--success); border: 1px solid rgba(16, 185, 129, 0.2); }
-        .badge.licenza { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
-        .badge.missione { background: rgba(59, 130, 246, 0.15); color: var(--info); border: 1px solid rgba(59, 130, 246, 0.2); }
-        .badge.assente { background: rgba(239, 68, 68, 0.15); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
-        
-        .sub-plan { display: block; font-size: 0.73em; opacity: 0.78; line-height: 1.2; margin-top: 2px; }
+        .panel-title {
+            font-size: 1.1rem;
+            color: var(--accent);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        td {
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-success {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
+        }
+
+        .badge-danger {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--red);
+            border: 1px solid var(--red);
+        }
+
+        .loading {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
 
-    <div id="dashboardContent">
-        <header>
-            <h1>Training Dept. | <span>Operational Board</span></h1>
-            <div class="clock" id="liveClock">00:00:00</div>
-        </header>
+    <header>
+        <h1>Tabellone Operativo Training Dept</h1>
+        <p class="subtitle">Stato Occupazione Aule & Disponibilità Istruttori</p>
+    </header>
 
-        <div class="slide-container">
-            <!-- SCHERMATA 1: AULE -->
-            <div class="panel active" id="slideAule">
-                <div class="panel-title">🏛️ Monitoraggio Aree Addestrative & Aule</div>
-                <div class="table-responsive">
-                    <table id="tableAule">
-                        <thead>
-                            <tr>
-                                <th>Aula</th>
-                                <th>Corso</th>
-                                <th>Dal</th>
-                                <th>Al</th>
-                                <th>Pres.</th>
-                                <th>Staff (Manager / Assistant)</th>
-                                <th>Stato</th>
-                            </tr>
-                        </thead>
-                        <tbody id="bodyAule"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- SCHERMATA 2: ISTRUTTORI -->
-            <div class="panel" id="slideIstruttori">
-                <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
-                <div class="split-tables-container">
-                    <div class="split-column"><table id="tableIstrSinistra"><thead><tr><th>Stato</th><th>Militare</th></tr></thead><tbody id="bodyIstrSinistra"></tbody></table></div>
-                    <div class="split-column"><table id="tableIstrDestra"><thead><tr><th>Stato</th><th>Militare</th></tr></thead><tbody id="bodyIstrDestra"></tbody></table></div>
-                </div>
-            </div>
+    <div class="dashboard-grid">
+        
+        <!-- PANNELLO AULE -->
+        <div class="panel">
+            <div class="panel-title">🏫 Stato Aule</div>
+            <div id="auleContainer" class="loading">Caricamento dati aule in corso...</div>
         </div>
 
-        <div class="dots-indicator">
-            <div class="dot active" id="dot1"></div><div class="dot" id="dot2"></div>
+        <!-- PANNELLO ISTRUTTORI -->
+        <div class="panel">
+            <div class="panel-title">👨‍🏫 Stato Istruttori</div>
+            <div id="istruttoriContainer" class="loading">Caricamento dati istruttori in corso...</div>
         </div>
+
     </div>
 
 <script>
-    const LINK_CSV_AULE = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=1402761773&single=true&output=csv";
-    const LINK_CSV_ISTRUTTORI = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?gid=87992488&single=true&output=csv";
+    // Incolla qui il tuo link CSV pubblicato da Google Fogli
+    const LINK_CSV_DASHBOARD = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?output=csv";
 
-    // Avvio automatico al caricamento della pagina
-    window.onload = function() {
-        setInterval(() => { document.getElementById('liveClock').innerText = new Date().toLocaleTimeString('it-IT'); }, 1000);
-        caricaDatiMonitor();
-        setInterval(caricaDatiMonitor, 60000); // Ricarica dati ogni minuto
-        
-        let fase = 1;
-        setInterval(() => {
-            const panels = ['slideAule', 'slideIstruttori'];
-            panels.forEach(id => document.getElementById(id).classList.remove('active'));
-            [1,2].forEach(i => document.getElementById('dot'+i).classList.remove('active'));
-            
-            fase = fase === 1 ? 2 : 1;
-            document.getElementById(panels[fase-1]).classList.add('active');
-            document.getElementById('dot'+fase).classList.add('active');
-        }, 15000); // Cambio slide ogni 15 secondi
-    };
-
-    async function caricaDatiMonitor() {
+    async function caricaDashboard() {
         try {
-            const [resA, resI] = await Promise.all([fetch(LINK_CSV_AULE), fetch(LINK_CSV_ISTRUTTORI)]);
-            renderAule(await resA.text());
-            renderIstruttori(await resI.text());
-        } catch (e) { console.error("Errore caricamento dati:", e); }
+            const response = await fetch(LINK_CSV_DASHBOARD);
+            const data = await response.text();
+            const righe = data.split(/\r?\n/);
+
+            let auleList = [];
+            let istruttoriList = [];
+
+            for (let i = 1; i < righe.length; i++) {
+                if (!righe[i]) continue;
+                const col = righe[i].split(',');
+
+                const tipo = col[2] ? col[2].toLowerCase().trim() : '';
+                
+                // Gestione Aule
+                if (tipo === 'aula') {
+                    auleList.push({
+                        nome: col[3] ? col[3].trim() : '-',
+                        corso: col[4] ? col[4].trim() : 'Libera',
+                        note: col[5] ? col[5].trim() : '-'
+                    });
+                }
+                
+                // Gestione Istruttori
+                if (tipo === 'istruttore') {
+                    istruttoriList.push({
+                        nome: col[3] ? col[3].trim() : '-',
+                        inizioLicenza: col[4] ? col[4].trim() : '',
+                        fineLicenza: col[5] ? col[5].trim() : '',
+                        note: col[6] ? col[6].trim() : '-'
+                    });
+                }
+            }
+
+            renderAule(auleList);
+            renderIstruttori(istruttoriList);
+
+        } catch (error) {
+            console.error("Errore nel caricamento della dashboard:", error);
+            document.getElementById('auleContainer').innerHTML = "<p style='color:var(--red)'>Errore di caricamento dati.</p>";
+            document.getElementById('istruttoriContainer').innerHTML = "<p style='color:var(--red)'>Errore di caricamento dati.</p>";
+        }
     }
 
-    function renderAule(csv) {
-        const rows = csv.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
-        const body = document.getElementById('bodyAule');
-        body.innerHTML = "";
-        
+    function renderAule(aule) {
+        const container = document.getElementById('auleContainer');
+        if (aule.length === 0) {
+            container.innerHTML = "<p class='loading'>Nessuna aula registrata.</p>";
+            return;
+        }
+
+        let html = `<table>
+            <thead>
+                <tr>
+                    <th>Aula</th>
+                    <th>Corso Occupante</th>
+                    <th>Note / Stato</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
+        aule.forEach(a => {
+            const isOccupata = a.corso && a.corso.toLowerCase() !== 'libera' && a.corso !== '-';
+            const badgeClass = isOccupata ? 'badge-danger' : 'badge-success';
+            const statoTesto = isOccupata ? a.corso : 'Libera';
+
+            html += `
+                <tr>
+                    <td><strong>${a.nome}</strong></td>
+                    <td><span class="badge ${badgeClass}">${statoTesto}</span></td>
+                    <td style="color:var(--text-muted);">${a.note}</td>
+                </tr>`;
+        });
+
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+
+    function renderIstruttori(istruttori) {
+        const container = document.getElementById('istruttoriContainer');
+        if (istruttori.length === 0) {
+            container.innerHTML = "<p class='loading'>Nessun istruttore registrato.</p>";
+            return;
+        }
+
+        let html = `<table>
+            <thead>
+                <tr>
+                    <th>Istruttore</th>
+                    <th>In Sede</th>
+                    <th>Note / Info</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
         const oggi = new Date();
-        oggi.setHours(0,0,0,0);
-        
-        let maxCorsoLen = 0;
+        oggi.setHours(0, 0, 0, 0);
 
-        rows.forEach((r) => {
-            const c = parseCsvLine(r);
-            if (c.length < 3) return;
+        istruttori.forEach(i => {
+            // LOGICA CORRETTA PER LE LICENZE:
+            // Di default l'istruttore è IN SEDE (Sì) con Badge VERDE
+            let inSede = true;
+            let dettaglioLicenza = "";
 
-            const nomeAula = c[0] || "-";
-            const nomeCorso = c[2] || "";
-            const sDal = c[3] || "";
-            const sAl = c[4] || "";
-            const presenze = c[5] || "0";
-            
-            const manager = c[7] || c[6] || "-";
-            const assistant = c[8] || "-";
-            
-            if (nomeCorso.length > maxCorsoLen) maxCorsoLen = nomeCorso.length;
+            // Controlla la licenza SOLO SE entrambe le date sono presenti
+            if (i.inizioLicenza && i.fineLicenza) {
+                const inizio = new Date(i.inizioLicenza);
+                const fine = new Date(i.fineLicenza);
 
-            const dDal = parseDate(sDal);
-            const dAl = parseDate(sAl);
+                // Verifica che le date inserite siano valide
+                if (!isNaN(inizio.getTime()) && !isNaN(fine.getTime())) {
+                    inizio.setHours(0,0,0,0);
+                    fine.setHours(23,59,59,999);
 
-            let isOccupata = false;
-            if (nomeCorso !== "" && nomeCorso !== "-") {
-                if (dDal && dAl) {
-                    if (oggi >= dDal && oggi <= dAl) {
-                        isOccupata = true;
-                    }
-                } else {
-                    isOccupata = true;
-                }
-            }
-
-            const badge = isOccupata 
-                ? `<span class="badge assente">🔴 OCCUPATA</span>` 
-                : `<span class="badge insede">🟢 LIBERA</span>`;
-            
-            let staff = "-";
-            if (manager !== "-" || assistant !== "-") {
-                staff = `${manager} ${assistant !== '-' ? '/ ' + assistant : ''}`;
-            }
-            
-            body.innerHTML += `<tr>
-                <td style="white-space:nowrap"><b>${nomeAula}</b></td>
-                <td class="col-corso">${nomeCorso || '-'}</td>
-                <td style="white-space:nowrap">${sDal || '-'}</td>
-                <td style="white-space:nowrap">${sAl || '-'}</td>
-                <td style="text-align:center">${presenze}</td>
-                <td style="font-size:0.88em; color:var(--text-muted);">${staff}</td>
-                <td>${badge}</td>
-            </tr>`;
-        });
-
-        const numRows = rows.length;
-        const containerHeight = 540;
-        let dynamicSize = Math.min(1.05, containerHeight / (numRows * 34));
-        
-        if (maxCorsoLen > 30) {
-            dynamicSize = Math.max(0.75, dynamicSize * 0.9);
-        }
-
-        document.getElementById('tableAule').style.fontSize = dynamicSize + "rem";
-    }
-
-    function renderIstruttori(csv) {
-        const rows = csv.split(/\r?\n/).filter(r => r.trim() !== "").slice(1);
-        const bodyS = document.getElementById('bodyIstrSinistra');
-        const bodyD = document.getElementById('bodyIstrDestra');
-        bodyS.innerHTML = ""; 
-        bodyD.innerHTML = "";
-        
-        const oggi = new Date(); 
-        oggi.setHours(0,0,0,0);
-
-        const listaMilitari = [];
-
-        rows.forEach((r) => {
-            const c = parseCsvLine(r);
-            const mil = c[1];
-            if (!mil) return;
-
-            let statoOriginale = c[0] ? c[0].toUpperCase() : "IN SEDE";
-            let tipoBase = statoOriginale.replace("IN ", "").trim();
-            let statoAttuale = "IN SEDE";
-            
-            if (tipoBase !== "IN SEDE" && tipoBase !== "LICENZA") {
-                statoAttuale = tipoBase;
-            }
-
-            let periodoAttuale = "";
-            const pianificazioni = [];
-
-            for (let colIdx = 2; colIdx < c.length; colIdx += 3) {
-                let tipoEvento = c[colIdx] ? c[colIdx].toUpperCase().replace("IN ", "").trim() : tipoBase;
-                if (!tipoEvento || tipoEvento === "IN SEDE") tipoEvento = "LICENZA";
-
-                const sDal = c[colIdx + 1];
-                const sAl = c[colIdx + 2];
-
-                const dDal = parseDate(sDal);
-                const dAl = parseDate(sAl);
-
-                if (dDal && dAl) {
-                    if (oggi >= dDal && oggi <= dAl) {
-                        statoAttuale = tipoEvento;
-                        periodoAttuale = `${sDal} - ${sAl}`;
-                    } else if (oggi < dDal) {
-                        pianificazioni.push({
-                            stato: tipoEvento,
-                            dal: sDal,
-                            al: sAl,
-                            dataObj: dDal
-                        });
+                    // Se la data di oggi rientra nel periodo di licenza -> ASSENTE
+                    if (oggi >= inizio && oggi <= fine) {
+                        inSede = false;
+                        dettaglioLicenza = ` (Licenza fino al ${fine.toLocaleDateString('it-IT')})`;
                     }
                 }
             }
 
-            listaMilitari.push({
-                nome: mil,
-                statoAttuale: statoAttuale,
-                periodoAttuale: periodoAttuale,
-                pianificazioni: pianificazioni
-            });
+            const badgeClass = inSede ? 'badge-success' : 'badge-danger';
+            const testoBadge = inSede ? 'Sì' : 'In Licenza';
+            const noteTesto = (i.note !== '-' ? i.note : '') + dettaglioLicenza;
+
+            html += `
+                <tr>
+                    <td><strong>${i.nome}</strong></td>
+                    <td><span class="badge ${badgeClass}">${testoBadge}</span></td>
+                    <td style="color:var(--text-muted);">${noteTesto || '-'}</td>
+                </tr>`;
         });
 
-        listaMilitari.forEach((m, i) => {
-            let bCl = "insede", icon = "🛡️", st = m.statoAttuale;
-            let subHtml = "";
-
-            if (st === "LICENZA") { bCl = "licenza"; icon = "🏖️"; }
-            else if (st === "MISSIONE") { bCl = "missione"; icon = "✈️"; }
-            else if (st !== "IN SEDE") { bCl = "assente"; icon = "⚠️"; }
-
-            if (m.periodoAttuale) {
-                subHtml += `<span class="sub-plan">🗓️ In corso: ${m.periodoAttuale}</span>`;
-            }
-
-            if (m.pianificazioni.length > 0) {
-                m.pianificazioni.sort((a,b) => a.dataObj - b.dataObj);
-                m.pianificazioni.forEach(p => {
-                    subHtml += `<span class="sub-plan">📅 Prox: <b>${p.stato}</b> (${p.dal}${p.al ? ' - '+p.al : ''})</span>`;
-                });
-            }
-
-            const html = `<tr><td style="white-space:nowrap"><span class="badge ${bCl}">${icon} ${st}</span></td><td><b>${m.nome}</b>${subHtml}</td></tr>`;
-            
-            if (i < Math.ceil(listaMilitari.length / 2)) {
-                bodyS.innerHTML += html;
-            } else {
-                bodyD.innerHTML += html;
-            }
-        });
-
-        const maxRows = Math.ceil(listaMilitari.length / 2);
-        const containerHeight = 540;
-        let dynamicSize = Math.min(1.1, containerHeight / (maxRows * 36));
-        
-        document.getElementById('tableIstrSinistra').style.fontSize = dynamicSize + "rem";
-        document.getElementById('tableIstrDestra').style.fontSize = dynamicSize + "rem";
+        html += `</tbody></table>`;
+        container.innerHTML = html;
     }
 
-    function parseCsvLine(text) {
-        let delimiter = text.includes('\t') ? '\t' : ',';
-        let result = [];
-        let cur = '';
-        let inQuotes = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === delimiter && !inQuotes) {
-                result.push(cur.trim());
-                cur = '';
-            } else {
-                cur += char;
-            }
-        }
-        result.push(cur.trim());
-        return result.map(s => s.replace(/^"|"$/g, ''));
-    }
-
-    function parseDate(s) {
-        if (!s) return null;
-        const p = s.trim().split(/[-/.]/);
-        return p.length < 2 ? null : new Date(p[2] || new Date().getFullYear(), p[1]-1, p[0]);
-    }
+    window.onload = caricaDashboard;
 </script>
 </body>
 </html>
