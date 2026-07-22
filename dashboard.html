@@ -317,31 +317,66 @@
         document.getElementById('tableIstrDestra').style.fontSize = dynamicSize + "rem";
     }
 
-    function parseCsvLine(text) {
-        let delimiter = text.includes('\t') ? '\t' : ',';
-        let result = [];
-        let cur = '';
-        let inQuotes = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i];
-            if (char === '"') {
-                inQuotes = !inQuotes;
-            } else if (char === delimiter && !inQuotes) {
-                result.push(cur.trim());
-                cur = '';
-            } else {
-                cur += char;
-            }
-        }
-        result.push(cur.trim());
-        return result.map(s => s.replace(/^"|"$/g, ''));
-    }
-
-    function parseDate(s) {
+   function parseDate(s) {
         if (!s) return null;
         const p = s.trim().split(/[-/.]/);
         return p.length < 2 ? null : new Date(p[2] || new Date().getFullYear(), p[1]-1, p[0]);
     }
-</script>
+
+    // --- CODICE ANSA (DENTRO LO SCRIPT) ---
+    async function caricaNotizieAnsa() {
+        const tickerText = document.getElementById('ansa-ticker-text');
+        const rssUrl = encodeURIComponent('https://www.ansa.it/sito/ansait_rss.xml');
+        const apiUrl = `https://api.allorigins.win/get?url=${rssUrl}`;
+
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Errore di rete');
+            const data = await response.json();
+            
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(data.contents, "text/xml");
+            const items = xmlDoc.querySelectorAll("item");
+            
+            let titoli = [];
+            items.forEach((item, index) => {
+                if (index < 12) {
+                    const title = item.querySelector("title")?.textContent;
+                    if (title) titoli.push(title.trim());
+                }
+            });
+
+            if (titoli.length > 0) {
+                tickerText.innerHTML = titoli.join(' &nbsp;&nbsp;&nbsp; 🔴 &nbsp;&nbsp;&nbsp; ');
+            }
+        } catch (err) {
+            console.error("Errore recupero ANSA:", err);
+            tickerText.innerHTML = "Notizie ANSA temporaneamente non disponibili";
+        }
+    }
+
+    caricaNotizieAnsa();
+    setInterval(caricaNotizieAnsa, 15 * 60 * 1000);
+</script>   
+
+<!-- --- BANNER ANSA (FUORI DALLO SCRIPT, SUBITO PRIMA DI BODY) --- -->
+<div id="ansa-ticker-container" style="position: fixed; bottom: 0; left: 0; width: 100%; background: #0a0f1d; color: #fff; border-top: 2px solid #d4af37; font-family: sans-serif; height: 36px; line-height: 36px; overflow: hidden; z-index: 9999; display: flex; align-items: center;">
+  <div style="background: #d4af37; color: #0a0f1d; padding: 0 12px; font-weight: 700; font-size: 0.82rem; text-transform: uppercase; white-space: nowrap; height: 100%; display: flex; align-items: center;">
+    📰 ANSA ULTIM'ORA
+  </div>
+  <div style="overflow: hidden; width: 100%; white-space: nowrap;">
+    <div id="ansa-ticker-text" style="display: inline-block; padding-left: 100%; animation: ticker 50s linear infinite; font-size: 0.9rem; font-weight: 500;">
+      Caricamento notizie in corso...
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes ticker {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-100%, 0, 0); }
+}
+</style>
+
 </body>
 </html>
