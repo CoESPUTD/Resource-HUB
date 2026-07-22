@@ -221,10 +221,11 @@
             const mil = c[1];
             if (!mil) return;
 
-            let statoOriginale = c[0] ? c[0].toUpperCase() : "IN SEDE";
-            let tipoBase = statoOriginale.replace("IN ", "").trim();
+            // Di base il militare è considerato IN SEDE (badge verde)
             let statoAttuale = "IN SEDE";
+            let tipoBase = c[0] ? c[0].toUpperCase().replace("IN ", "").trim() : "IN SEDE";
             
+            // Se lo stato base è una missione/assenza specifica, mantienila
             if (tipoBase !== "IN SEDE" && tipoBase !== "LICENZA") {
                 statoAttuale = tipoBase;
             }
