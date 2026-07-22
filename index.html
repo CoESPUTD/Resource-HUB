@@ -42,15 +42,12 @@
         
         .panel-title { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; color: var(--text-main); margin-bottom: 10px; border-bottom: 2px solid var(--accent-gold); padding-bottom: 6px; width: fit-content; flex-shrink: 0; }
 
-        /* Tabelle - Layout Dinamico */
+        /* Tabelle - Layout Adattivo */
         .table-responsive { overflow: hidden; flex-grow: 1; width: 100%; }
-        
-        /* Usiamo table-layout: auto per far adattare le colonne alla lunghezza del contenuto */
         table { width: 100%; border-collapse: collapse; text-align: left; color: #e5e7eb; table-layout: auto; }
         th { background: rgba(255, 255, 255, 0.04); color: var(--text-muted); padding: 6px 6px; font-weight: 600; text-transform: uppercase; border-bottom: 2px solid rgba(255,255,255,0.1); font-size: 0.78em; white-space: nowrap; }
         td { padding: 5px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); font-weight: 500; vertical-align: middle; }
 
-        /* Consentiamo al nome del corso di andare a capo se necessario, ma con spazio prioritario */
         .col-corso { font-weight: 600; color: #ffffff; }
 
         /* Slide Istruttori */
@@ -88,7 +85,7 @@
         </header>
 
         <div class="slide-container">
-            <!-- SCHERMATA 1: TUTTE LE AULE (Layout con Auto-Fit Dinamico) -->
+            <!-- SCHERMATA 1: AULE CON CALCOLO STATO AUTOMATICO -->
             <div class="panel active" id="slideAule">
                 <div class="panel-title">🏛️ Monitoraggio Aree Addestrative & Aule</div>
                 <div class="table-responsive">
@@ -109,7 +106,7 @@
                 </div>
             </div>
 
-            <!-- SCHERMATA 2: ISTRUTTORI (Senza Duplicati e Auto-Fit) -->
+            <!-- SCHERMATA 2: ISTRUTTORI MULTI-COLONNA -->
             <div class="panel" id="slideIstruttori">
                 <div class="panel-title">👥 Stato d'Impiego Personale / Istruttori</div>
                 <div class="split-tables-container">
@@ -162,39 +159,67 @@
     }
 
     function renderAule(csv) {
-        const rows = csv.split(/\r?\n/).filter(r => r.split(',').length >= 10).slice(1);
+        const rows = csv.split(/\r?\n/).filter(r => r.split(',').length >= 5).slice(1);
         const body = document.getElementById('bodyAule');
         body.innerHTML = "";
         
+        const oggi = new Date();
+        oggi.setHours(0,0,0,0);
+        
+        let maxCorsoLen = 0;
+
         rows.forEach((r) => {
-            const c = r.split(',');
-            const stato = c[9].toUpperCase().trim();
-            const badge = stato.includes("OCCUP") ? `<span class="badge assente">🔴 ${stato}</span>` : `<span class="badge insede">🟢 ${stato}</span>`;
-            const staff = `${c[7] || '-'} / ${c[8] || '-'}`;
+            const c = r.split(',').map(cell => cell ? cell.trim() : "");
+            const nomeAula = c[0] || "-";
+            const nomeCorso = c[2] || "";
+            const sDal = c[3] || "";
+            const sAl = c[4] || "";
+            const presenze = c[5] || "0";
+            const manager = c[7] || "-";
+            const assistant = c[8] || "-";
+            
+            if (nomeCorso.length > maxCorsoLen) maxCorsoLen = nomeCorso.length;
+
+            const dDal = parseDate(sDal);
+            const dAl = parseDate(sAl);
+
+            // CALCOLO AUTOMATICO DELLO STATO AULA
+            let isOccupata = false;
+
+            if (nomeCorso !== "" && nomeCorso !== "-") {
+                if (dDal && dAl) {
+                    // Se ci sono le date, è occupata SOLTANTO nel periodo compreso tra Dal e Al
+                    if (oggi >= dDal && oggi <= dAl) {
+                        isOccupata = true;
+                    }
+                } else {
+                    // Se c'è scritto un corso ma NON ci sono date, la consideriamo comunque occupata
+                    isOccupata = true;
+                }
+            }
+
+            const badge = isOccupata 
+                ? `<span class="badge assente">🔴 OCCUPATA</span>` 
+                : `<span class="badge insede">🟢 LIBERA</span>`;
+            
+            const staff = `${manager} / ${assistant}`;
             
             body.innerHTML += `<tr>
-                <td style="white-space:nowrap"><b>${c[0]}</b></td>
-                <td class="col-corso">${c[2]||'-'}</td>
-                <td style="white-space:nowrap">${c[3]||'-'}</td>
-                <td style="white-space:nowrap">${c[4]||'-'}</td>
-                <td style="text-align:center">${c[5]||'0'}</td>
+                <td style="white-space:nowrap"><b>${nomeAula}</b></td>
+                <td class="col-corso">${nomeCorso || '-'}</td>
+                <td style="white-space:nowrap">${sDal || '-'}</td>
+                <td style="white-space:nowrap">${sAl || '-'}</td>
+                <td style="text-align:center">${presenze}</td>
                 <td style="font-size:0.88em; color:var(--text-muted);">${staff}</td>
                 <td>${badge}</td>
             </tr>`;
         });
 
-        // 🚀 AUTO-FIT FONT DINAMICO PER LE AULE
-        // Calcola lo spazio necessario in base al numero di righe e alla lunghezza dei testi
+        // AUTO-FIT FONT AULE
         const numRows = rows.length;
         const containerHeight = 540;
-        
-        // Trova il nome del corso più lungo per calcolare la scala
-        let maxCorsoLen = 0;
-        rows.forEach(r => { const len = (r.split(',')[2] || '').length; if(len > maxCorsoLen) maxCorsoLen = len; });
-
         let dynamicSize = Math.min(1.05, containerHeight / (numRows * 34));
         
-        // Se ci sono corsi con nomi lunghi (> 30 caratteri), scala leggermente per evitare forzature
         if (maxCorsoLen > 30) {
             dynamicSize = Math.max(0.75, dynamicSize * 0.9);
         }
@@ -211,48 +236,50 @@
         
         const oggi = new Date(); 
         oggi.setHours(0,0,0,0);
-        
-        const mappaMilitari = {};
 
-        // 1. Raggruppamento per militare unico
+        const listaMilitari = [];
+
         rows.forEach((r) => {
-            const c = r.split(',');
-            const statoTab = c[0]?.toUpperCase().trim() || "";
-            const mil = c[1]?.trim();
+            const c = r.split(',').map(cell => cell ? cell.trim() : "");
+            const mil = c[1];
             if (!mil) return;
 
-            const dDal = parseDate(c[2]);
-            const dAl = parseDate(c[3]);
+            let statoAttuale = c[0].toUpperCase() || "IN SEDE";
+            let periodoAttuale = "";
+            const pianificazioni = [];
 
-            if (!mappaMilitari[mil]) {
-                mappaMilitari[mil] = { 
-                    nome: mil, 
-                    statoAttuale: "IN SEDE", 
-                    periodoAttuale: "",
-                    pianificazioni: [] 
-                };
-            }
+            // Lettura a triplette: (Tipo, Dal, Al) -> Col C, D, E | F, G, H | ...
+            for (let colIdx = 2; colIdx < c.length; colIdx += 3) {
+                const tipo = c[colIdx] ? c[colIdx].toUpperCase() : "LICENZA";
+                const sDal = c[colIdx + 1];
+                const sAl = c[colIdx + 2];
 
-            if (dDal && dAl) {
-                if (oggi >= dDal && oggi <= dAl) {
-                    mappaMilitari[mil].statoAttuale = statoTab || "ASSENTE";
-                    mappaMilitari[mil].periodoAttuale = `${c[2].trim()} - ${c[3].trim()}`;
-                } else if (oggi < dDal) {
-                    mappaMilitari[mil].pianificazioni.push({
-                        stato: statoTab,
-                        dal: c[2].trim(),
-                        al: c[3].trim(),
-                        dataObj: dDal
-                    });
+                const dDal = parseDate(sDal);
+                const dAl = parseDate(sAl);
+
+                if (dDal && dAl) {
+                    if (oggi >= dDal && oggi <= dAl) {
+                        statoAttuale = tipo;
+                        periodoAttuale = `${sDal} - ${sAl}`;
+                    } else if (oggi < dDal) {
+                        pianificazioni.push({
+                            stato: tipo,
+                            dal: sDal,
+                            al: sAl,
+                            dataObj: dDal
+                        });
+                    }
                 }
-            } else if (statoTab && statoTab !== "IN SEDE" && mappaMilitari[mil].statoAttuale === "IN SEDE") {
-                mappaMilitari[mil].statoAttuale = statoTab;
             }
+
+            listaMilitari.push({
+                nome: mil,
+                statoAttuale: statoAttuale,
+                periodoAttuale: periodoAttuale,
+                pianificazioni: pianificazioni
+            });
         });
 
-        const listaMilitari = Object.values(mappaMilitari);
-
-        // 2. Renderizzazione divisa 50/50
         listaMilitari.forEach((m, i) => {
             let bCl = "insede", icon = "🛡️", st = m.statoAttuale;
             let subHtml = "";
@@ -281,7 +308,7 @@
             }
         });
 
-        // 🚀 AUTO-FIT FONT ISTRUTTORI
+        // AUTO-FIT FONT ISTRUTTORI
         const maxRows = Math.ceil(listaMilitari.length / 2);
         const containerHeight = 540;
         let dynamicSize = Math.min(1.2, containerHeight / (maxRows * 38));
