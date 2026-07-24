@@ -193,8 +193,8 @@
             const c = parseCsvLine(r);
             if (c.length < 2) return;
 
-            // Indici mappati sul foglio Google Aule:
-            // c[0]=AULA, c[1]=POSTI, c[2]=CORSO, c[3]=DAL, c[4]=AL, c[5]=PRESENZE, c[6]=COORD, c[7]=MANAGER, c[8]=ASSISTANT
+            // Mappatura colonne foglio Google Aule:
+            // c[0]=AULA, c[1]=POSTI, c[2]=CORSO, c[3]=DAL, c[4]=AL, c[5]=PRESENZE, c[6]=COORD, c[7]=MANAGER, c[8]=ASSISTANT, c[9]=STATO
             const nomeAula = c[0] || "-";
             const capienzaVal = c[1] ? c[1].trim() : "";
             const nomeCorso = c[2] ? c[2].trim() : "";
@@ -205,7 +205,10 @@
             const manager = c[7] || c[6] || "-";
             const assistant = c[8] || "-";
             
-            // Gestione del campo Capienza / Presenze
+            // Colonna STATO manuale dal foglio (Colonna J = c[9])
+            const statoManuale = c[9] ? c[9].trim().toUpperCase() : "";
+
+            // --- GESTIONE CAPENZA / PRESENZE ---
             let displayPosti = `<span style="opacity: 0.3;">-</span>`;
 
             if (capienzaVal !== "" && capienzaVal !== "-") {
@@ -220,19 +223,35 @@
             const dDal = parseDate(sDal);
             const dAl = parseDate(sAl, true);
 
-            // Calcolo occupazione reale in base alla data
-            let isOccupata = false;
-            if (nomeCorso !== "" && nomeCorso !== "-") {
-                if (dDal && dAl) {
-                    if (oggi >= dDal && oggi <= dAl) isOccupata = true;
-                } else {
-                    isOccupata = true;
-                }
-            }
+            // --- LOGICA DI OVERRIDE DELLO STATO ---
+            let badge = "";
 
-            const badge = isOccupata 
-                ? `<span class="badge assente">🔴 OCCUPATA</span>` 
-                : `<span class="badge insede">🟢 LIBERA</span>`;
+            // 1. Se hai scritto qualcosa a mano nella colonna STATO del foglio Google:
+            if (statoManuale !== "" && statoManuale !== "-") {
+                if (statoManuale.includes("OCCUPAT") || statoManuale.includes("RISERVAT")) {
+                    badge = `<span class="badge assente">🔴 ${statoManuale}</span>`;
+                } else if (statoManuale.includes("LIBER")) {
+                    badge = `<span class="badge insede">🟢 LIBERA</span>`;
+                } else {
+                    // Per stati personalizzati (es. "MANUTENZIONE", "PULIZIE")
+                    badge = `<span class="badge licenza">⚠️ ${statoManuale}</span>`;
+                }
+            } 
+            // 2. Altrimenti usa l'AUTOMATISMO in base alle date:
+            else {
+                let isOccupata = false;
+                if (nomeCorso !== "" && nomeCorso !== "-") {
+                    if (dDal && dAl) {
+                        if (oggi >= dDal && oggi <= dAl) isOccupata = true;
+                    } else {
+                        isOccupata = true;
+                    }
+                }
+
+                badge = isOccupata 
+                    ? `<span class="badge assente">🔴 OCCUPATA</span>` 
+                    : `<span class="badge insede">🟢 LIBERA</span>`;
+            }
             
             let staff = "-";
             if (manager !== "-" || assistant !== "-") {
