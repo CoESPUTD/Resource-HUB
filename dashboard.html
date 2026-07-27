@@ -193,8 +193,6 @@
             const c = parseCsvLine(r);
             if (c.length < 2) return;
 
-            // Mappatura colonne foglio Google Aule:
-            // c[0]=AULA, c[1]=POSTI, c[2]=CORSO, c[3]=DAL, c[4]=AL, c[5]=PRESENZE, c[6]=COORD, c[7]=MANAGER, c[8]=ASSISTANT, c[9]=STATO
             const nomeAula = c[0] || "-";
             const capienzaVal = c[1] ? c[1].trim() : "";
             const nomeCorso = c[2] ? c[2].trim() : "";
@@ -205,10 +203,8 @@
             const manager = c[7] || c[6] || "-";
             const assistant = c[8] || "-";
             
-            // Colonna STATO manuale dal foglio (Colonna J = c[9])
             const statoManuale = c[9] ? c[9].trim().toUpperCase() : "";
 
-            // --- GESTIONE CAPENZA / PRESENZE ---
             let displayPosti = `<span style="opacity: 0.3;">-</span>`;
 
             if (capienzaVal !== "" && capienzaVal !== "-") {
@@ -223,21 +219,17 @@
             const dDal = parseDate(sDal);
             const dAl = parseDate(sAl, true);
 
-            // --- LOGICA DI OVERRIDE DELLO STATO ---
             let badge = "";
 
-            // 1. Se hai scritto qualcosa a mano nella colonna STATO del foglio Google:
             if (statoManuale !== "" && statoManuale !== "-") {
                 if (statoManuale.includes("OCCUPAT") || statoManuale.includes("RISERVAT")) {
                     badge = `<span class="badge assente">🔴 ${statoManuale}</span>`;
                 } else if (statoManuale.includes("LIBER")) {
                     badge = `<span class="badge insede">🟢 LIBERA</span>`;
                 } else {
-                    // Per stati personalizzati (es. "MANUTENZIONE", "PULIZIE")
                     badge = `<span class="badge licenza">⚠️ ${statoManuale}</span>`;
                 }
             } 
-            // 2. Altrimenti usa l'AUTOMATISMO in base alle date:
             else {
                 let isOccupata = false;
                 if (nomeCorso !== "" && nomeCorso !== "-") {
@@ -271,7 +263,6 @@
 
         body.innerHTML = htmlContent;
 
-        // Auto-ridimensionamento dinamico del font
         const numRows = Math.max(rows.length, 1);
         const containerHeight = 500;
         let dynamicSize = Math.min(1.05, Math.max(0.7, containerHeight / (numRows * 36)));
@@ -293,38 +284,41 @@
 
         rows.forEach((r) => {
             const c = parseCsvLine(r);
-            const mil = c[1];
+            const mil = c[1]; // Colonna B: MILITARE
             if (!mil) return;
 
-            let statoAttuale = "IN SEDE";
-            let tipoBase = c[0] ? c[0].toUpperCase().replace("IN ", "").trim() : "IN SEDE";
-            
-            if (tipoBase !== "IN SEDE" && tipoBase !== "LICENZA") {
-                statoAttuale = tipoBase;
-            }
+            // Colonna A: TIPO DI ASSENZA (Stato Base)
+            let statoBase = c[0] ? c[0].trim().toUpperCase() : "IN SEDE";
+            if (statoBase === "" || statoBase === "-") statoBase = "IN SEDE";
 
+            let statoAttuale = "IN SEDE";
             let periodoAttuale = "";
             const pianificazioni = [];
 
-            for (let colIdx = 2; colIdx < c.length; colIdx += 3) {
-                const sDal = c[colIdx + 1];
-                const sAl = c[colIdx + 2];
+            // Analizziamo i 3 blocchi di eventi (Tipo 1, Tipo 2, Tipo 3)
+            // c[2]=Tipo1, c[3]=Dal1, c[4]=Al1
+            // c[5]=Tipo2, c[6]=Dal2, c[7]=Al2
+            // c[8]=Tipo3, c[9]=Dal3, c[10]=Al3
+            let eventoTrovatoOggi = false;
 
-                if (!sDal && !sAl) continue;
+            for (let i = 2; i < c.length && i <= 8; i += 3) {
+                const tipoEv = c[i] ? c[i].trim().toUpperCase() : "";
+                const sDal = c[i+1] ? c[i+1].trim() : "";
+                const sAl = c[i+2] ? c[i+2].trim() : "";
 
-                let tipoEvento = c[colIdx] ? c[colIdx].toUpperCase().replace("IN ", "").trim() : "LICENZA";
-                if (!tipoEvento || tipoEvento === "IN SEDE") tipoEvento = "LICENZA";
+                if (!tipoEv && !sDal && !sAl) continue;
 
                 const dDal = parseDate(sDal);
                 const dAl = parseDate(sAl, true);
 
                 if (dDal && dAl) {
                     if (oggi >= dDal && oggi <= dAl) {
-                        statoAttuale = tipoEvento;
+                        statoAttuale = tipoEv || "IN LICENZA";
                         periodoAttuale = `${sDal} - ${sAl}`;
+                        eventoTrovatoOggi = true;
                     } else if (oggi < dDal) {
                         pianificazioni.push({
-                            stato: tipoEvento,
+                            stato: tipoEv || "IN LICENZA",
                             dal: sDal,
                             al: sAl,
                             dataObj: dDal
@@ -332,17 +326,28 @@
                     }
                 } else if (dDal && !dAl) {
                     if (oggi.getTime() === dDal.getTime()) {
-                        statoAttuale = tipoEvento;
+                        statoAttuale = tipoEv || "IN LICENZA";
                         periodoAttuale = `${sDal}`;
+                        eventoTrovatoOggi = true;
                     } else if (oggi < dDal) {
                         pianificazioni.push({
-                            stato: tipoEvento,
+                            stato: tipoEv || "IN LICENZA",
                             dal: sDal,
                             al: "",
                             dataObj: dDal
                         });
                     }
+                } else if (!sDal && !sAl && tipoEv) {
+                    // Se c'è solo la tipologia senza date, usa quella come stato se non c'è una data precisa per oggi
+                    if (!eventoTrovatoOggi) {
+                        statoAttuale = tipoEv;
+                    }
                 }
+            }
+
+            // Se nessun evento specifico si applica ad oggi, usa lo stato della colonna A (Tipo di Assenza)
+            if (!eventoTrovatoOggi && statoBase !== "IN SEDE") {
+                statoAttuale = statoBase;
             }
 
             listaMilitari.push({
@@ -360,9 +365,9 @@
             let bCl = "insede", icon = "🛡️", st = m.statoAttuale;
             let subHtml = "";
 
-            if (st === "LICENZA") { bCl = "licenza"; icon = "🏖️"; }
-            else if (st === "MISSIONE") { bCl = "missione"; icon = "✈️"; }
-            else if (st === "IN SEDE" || st === "SEDE") { bCl = "insede"; icon = "🛡️"; }
+            if (st.includes("LICENZA")) { bCl = "licenza"; icon = "🏖️"; }
+            else if (st.includes("MISSIONE") || st.includes("ESTERO") || st.includes("MIX")) { bCl = "missione"; icon = "✈️"; }
+            else if (st.includes("SEDE")) { bCl = "insede"; icon = "🛡️"; }
             else { bCl = "assente"; icon = "⚠️"; }
 
             if (m.periodoAttuale) {
