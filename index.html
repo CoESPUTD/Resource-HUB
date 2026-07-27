@@ -3,30 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoESPU Training Department Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>CoESPU Training Department Resource HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
-            --panel-bg: rgba(15, 15, 15, 0.85);
+            --bg-dark: #050505;
+            --panel-bg: rgba(18, 18, 20, 0.85);
+            --panel-border: rgba(212, 175, 55, 0.25);
+            --panel-border-hover: rgba(212, 175, 55, 0.6);
             --accent: #d4af37;
-            --accent-hover: #b8921a;
+            --accent-hover: #f0c84b;
+            --accent-glow: rgba(212, 175, 55, 0.35);
             --text-main: #f8fafc;
-            --text-muted: #cbd5e1;
+            --text-muted: #94a3b8;
             --danger: #ef4444;
             --success: #22c55e;
             --whatsapp-green: #25D366;
+            --whatsapp-hover: #20ba59;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 6px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-main);
             min-height: 100vh;
-            padding: 20px;
-            background-color: #050505;
+            padding: 24px 16px;
+            background-color: var(--bg-dark);
             overflow-x: hidden;
+            line-height: 1.5;
         }
 
         .video-background {
@@ -36,86 +46,446 @@
 
         .video-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); z-index: -1;
+            background: radial-gradient(circle at center, rgba(5,5,5,0.75) 0%, rgba(0,0,0,0.92) 100%);
+            z-index: -1;
         }
 
-        .lang-bar { width: 100%; max-width: 1200px; display: flex; justify-content: flex-end; gap: 12px; margin: 0 auto 15px auto; z-index: 10; }
-        .lang-btn { font-size: 1.5rem; cursor: pointer; filter: grayscale(0.6); transition: 0.3s; border: 2px solid transparent; border-radius: 4px; padding: 2px; }
-        .lang-btn:hover, .lang-btn.active { filter: grayscale(0); transform: scale(1.15); border-color: var(--accent); }
-
-        .main-grid {
-            display: block;
-            max-width: 1250px;
+        /* Top Bar Multilingua */
+        .top-bar {
             width: 100%;
+            max-width: 1280px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin: 0 auto 20px auto;
+            z-index: 10;
+        }
+
+        .lang-btn {
+            font-size: 1.4rem;
+            cursor: pointer;
+            filter: grayscale(0.7);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            border-radius: var(--radius-sm);
+            padding: 4px 8px;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(8px);
+        }
+
+        .lang-btn:hover, .lang-btn.active {
+            filter: grayscale(0);
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        /* Layout Grid Principale */
+        .hub-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+        }
+
+        @media (min-width: 992px) {
+            .hub-container {
+                grid-template-columns: 1.15fr 0.85fr;
+            }
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .logo-img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            margin-bottom: 14px;
+            border-radius: 50%;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-img:hover {
+            transform: scale(1.03);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #fff;
+            margin-bottom: 6px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        /* Card Generica */
+        .card {
+            background: var(--panel-bg);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            backdrop-filter: blur(16px);
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: border-color 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--panel-border-hover);
+        }
+
+        /* Card QR Code Principale */
+        .qr-card-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .qr-card {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            text-align: center;
+            display: inline-block;
+        }
+
+        .qr-card p {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 10px;
+            font-size: 0.72rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        /* Search Card */
+        .search-title {
+            font-size: 0.95rem;
+            color: var(--accent);
+            margin-bottom: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            text-align: center;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            max-width: 520px;
             margin: 0 auto;
         }
-        
-        @media (min-width: 992px) {
-            .main-grid {
-                display: table;
-                table-layout: fixed;
-                border-collapse: separate;
-                border-spacing: 25px 0px;
-            }
-            .col-left { display: table-cell; width: 55%; vertical-align: top; }
-            .col-right { display: table-cell; width: 45%; vertical-align: top; }
+
+        .search-input {
+            flex: 1;
+            padding: 13px 18px;
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(10, 10, 12, 0.8);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.2s;
         }
 
-        header { text-align: center; margin-bottom: 25px; }
-        .logo-img { width: 120px; height: auto; margin-bottom: 12px; border-radius: 50%; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
-        h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: 0.5px; margin-bottom: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.9); }
-        header p { color: var(--text-muted); font-size: 0.95rem; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
-        
-        /* Box QR Code Hub Generale */
-        .qr-card { background: white; padding: 15px; border-radius: 16px; display: inline-block; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); text-align: center;}
-        .qr-card p { color: #0a0a0a; font-weight: 700; margin-top: 10px; font-size: 0.75rem; letter-spacing: 0.5px;}
-        #qrcode img { margin: 0 auto; }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            outline: none;
+            background: rgba(15, 15, 20, 0.95);
+        }
 
-        /* Box QR Code WhatsApp Dinamico */
-        .whatsapp-card { background: white; padding: 20px; border-radius: 16px; display: none; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(37, 211, 102, 0.3); text-align: center; border: 3px solid var(--whatsapp-green); animation: fadeIn 0.5s ease forwards; }
-        .whatsapp-card p { color: #0a0a0a; font-weight: 700; margin-bottom: 12px; font-size: 0.85rem; letter-spacing: 0.3px; text-transform: uppercase;}
-        .whatsapp-card .qr-holder { display: flex; justify-content: center; margin-bottom: 10px; }
-        .whatsapp-card .wa-btn { display: inline-block; background: var(--whatsapp-green); color: white; text-decoration: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; margin-top: 5px; transition: 0.2s; }
-        .whatsapp-card .wa-btn:hover { background: #20ba59; transform: scale(1.02); }
+        .search-btn {
+            background: var(--accent);
+            color: #050505;
+            font-weight: 700;
+            padding: 0 26px;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
 
-        /* Pannello di Ricerca */
-        .search-card { background: var(--panel-bg); padding: 22px; border-radius: 16px; border: 1px solid rgba(212, 175, 55, 0.3); box-shadow: 0 10px 30px rgba(0,0,0,0.7); margin-bottom: 25px; text-align: center; backdrop-filter: blur(10px); }
-        .search-card h2 { font-size: 1.05rem; color: var(--accent); margin-bottom: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-        .search-box { display: flex; gap: 10px; max-width: 500px; margin: 0 auto; }
-        .search-input { flex: 1; padding: 12px 16px; border-radius: 8px; border: 1px solid #444; background: rgba(30,30,30,0.8); color: #fff; font-size: 1rem; font-weight: 600; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-        .search-input:focus { border-color: var(--accent); outline: none; }
-        .search-btn { background: var(--accent); color: #000; font-weight: 700; padding: 0 24px; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; text-transform: uppercase; font-size: 0.85rem; }
-        .search-btn:hover { background: var(--accent-hover); }
+        .search-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
 
-        /* Liste e Contenuti */
-        .category-title { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: var(--accent); margin: 20px 0 12px 5px; letter-spacing: 1px; border-left: 3px solid var(--accent); padding-left: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-        .resource-item { background: var(--panel-bg); padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; margin-bottom: 10px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.2s; }
-        .resource-item:hover { transform: translateY(-2px); border-color: rgba(212, 175, 55, 0.5); background: rgba(25, 25, 25, 0.9); }
-        .file-info { display: flex; align-items: center; gap: 12px; text-align: left; }
-        .file-icon { font-size: 1.4rem; }
-        .file-name { font-weight: 600; display: block; margin-bottom: 2px; }
-        .file-meta { font-size: 0.8rem; color: #cbd5e1; }
-        .btn-download { background: var(--accent); color: #0a0a0a; padding: 6px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; }
+        /* Box WhatsApp Dinamico */
+        .whatsapp-card {
+            background: rgba(18, 18, 20, 0.95);
+            padding: 22px;
+            border-radius: var(--radius-lg);
+            display: none;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(37, 211, 102, 0.15);
+            text-align: center;
+            border: 2px solid var(--whatsapp-green);
+            animation: fadeIn 0.4s ease forwards;
+        }
 
-        /* SEZIONE DESTRA: PLAYER VIDEO E NOTIZIE */
-        .media-panel { background: var(--panel-bg); border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); backdrop-filter: blur(10px); margin-bottom: 25px; text-align: center; }
-        .video-container { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 8px; overflow: hidden; border: 1px solid #333; margin-bottom: 15px; }
-        
-        .video-playlist { max-height: 140px; overflow-y: auto; text-align: left; margin-bottom: 20px; padding-right: 5px; }
-        .playlist-item { padding: 10px; background: rgba(255,255,255,0.03); margin-bottom: 5px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; transition: 0.2s; }
-        .playlist-item:hover, .playlist-item.active { background: rgba(212, 175, 55, 0.1); border-color: var(--accent); }
+        .whatsapp-title {
+            color: var(--whatsapp-green);
+            font-weight: 700;
+            margin-bottom: 14px;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
 
-        .news-panel { background: rgba(10, 10, 10, 0.9); border-radius: 12px; border: 1px solid rgba(212,175,55,0.2); padding: 15px; text-align: left; }
-        .news-panel h3 { font-size: 0.85rem; color: var(--accent); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-        
-        .ticker-container { width: 100%; height: 160px; overflow: hidden; position: relative; background: #000; border-radius: 6px; border: 1px solid #222; }
-        .ticker-wrapper { position: absolute; width: 100%; padding: 10px; animation: ticker-vertical 20s linear infinite; }
-        .ticker-wrapper:hover { animation-play-state: paused; }
-        
-        .news-item { margin-bottom: 18px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 10px; }
-        .news-item:last-child { border: none; margin-bottom: 0; padding-bottom: 0; }
-        .news-title { font-weight: 700; color: var(--accent); font-size: 0.9rem; margin-bottom: 3px; text-transform: uppercase; }
-        .news-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+        .whatsapp-card .qr-holder {
+            display: flex;
+            justify-content: center;
+            margin: 12px 0 16px 0;
+            background: #fff;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .wa-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--whatsapp-green);
+            color: white;
+            text-decoration: none;
+            padding: 10px 22px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .wa-btn:hover {
+            background: var(--whatsapp-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.4);
+        }
+
+        /* Sezione Risorse e Item List */
+        .category-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin: 24px 0 12px 0;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.3), transparent);
+        }
+
+        .resource-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all 0.25s ease;
+        }
+
+        .resource-item:hover {
+            transform: translateX(4px);
+            border-color: var(--accent);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-align: left;
+        }
+
+        .file-icon {
+            font-size: 1.5rem;
+            width: 32px;
+            text-align: center;
+        }
+
+        .file-name {
+            font-weight: 600;
+            display: block;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .file-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .btn-download {
+            background: var(--accent);
+            color: #050505;
+            padding: 6px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .resource-item:hover .btn-download {
+            background: var(--accent-hover);
+        }
+
+        /* Sezione Destra: Media & Ticker */
+        .video-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+
+        .video-playlist {
+            max-height: 180px;
+            overflow-y: auto;
+            text-align: left;
+            margin-bottom: 24px;
+            padding-right: 6px;
+        }
+
+        .video-playlist::-webkit-scrollbar {
+            width: 5px;
+        }
+        .video-playlist::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+        }
+
+        .playlist-item {
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.02);
+            margin-bottom: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .playlist-item:hover, .playlist-item.active {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--accent);
+        }
+
+        .playlist-item.active {
+            font-weight: 700;
+        }
+
+        /* Panel Avvisi / Notizie */
+        .news-panel {
+            background: rgba(10, 10, 12, 0.9);
+            border-radius: var(--radius-md);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 16px;
+            text-align: left;
+        }
+
+        .news-panel-header {
+            font-size: 0.85rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 0.8px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ticker-container {
+            width: 100%;
+            height: 150px;
+            overflow: hidden;
+            position: relative;
+            background: rgba(0,0,0,0.5);
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .ticker-wrapper {
+            position: absolute;
+            width: 100%;
+            padding: 12px;
+            animation: ticker-vertical 22s linear infinite;
+        }
+
+        .ticker-wrapper:hover {
+            animation-play-state: paused;
+        }
+
+        .news-item {
+            margin-bottom: 16px;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .news-item:last-child {
+            border: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .news-title {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 0.88rem;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .news-desc {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
 
         @keyframes ticker-vertical {
             0% { transform: translateY(100%); }
@@ -127,11 +497,29 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .message-box { margin-top: 15px; font-size: 0.9rem; font-weight: 600; display: none; }
-        .message-box.error { color: var(--danger); display: block; }
-        .message-box.success { color: var(--success); display: block; }
-        
-        @media (max-width: 991px) { .col-left, .col-right { display: block; width: 100%; } .media-panel { margin-top: 25px; } }
+        .message-box {
+            margin-top: 14px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: none;
+            text-align: center;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+        }
+
+        .message-box.error {
+            color: var(--danger);
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            display: block;
+        }
+
+        .message-box.success {
+            color: var(--success);
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -141,14 +529,16 @@
     </video>
     <div class="video-overlay"></div>
 
-    <div class="lang-bar">
-        <span class="lang-btn active" onclick="setLanguage('it')">🇮🇹</span>
-        <span class="lang-btn" onclick="setLanguage('en')">🇬🇧</span>
-        <span class="lang-btn" onclick="setLanguage('fr')">🇫🇷</span>
+    <!-- Selettore Lingua -->
+    <div class="top-bar">
+        <span class="lang-btn active" onclick="setLanguage('it')" title="Italiano">🇮🇹</span>
+        <span class="lang-btn" onclick="setLanguage('en')" title="English">🇬🇧</span>
+        <span class="lang-btn" onclick="setLanguage('fr')" title="Français">🇫🇷</span>
     </div>
 
-    <div class="main-grid">
+    <div class="hub-container">
         
+        <!-- COLONNA SINISTRA -->
         <div class="col-left">
             <header>
                 <img src="logo.jpeg" alt="CoESPU Logo" class="logo-img">
@@ -156,17 +546,17 @@
                 <p id="subTitle">Portale Supporto Logistico & Didattico</p>
             </header>
 
-            <center>
+            <div class="qr-card-wrapper">
                 <div class="qr-card">
                     <div id="qrcode"></div>
                     <p id="qrText">SCANSIONA PER ACCEDERE AL PORTALE</p>
                 </div>
-            </center>
+            </div>
 
-            <div class="search-card">
-                <h2 id="searchTitle">Accesso Materiale Didattico</h2>
+            <div class="card">
+                <div class="search-title" id="searchTitle">Accesso Materiale Didattico</div>
                 <div class="search-box">
-                    <input type="text" id="courseCodeInput" class="search-input" placeholder="Es: ALFA, BRAVO...">
+                    <input type="text" id="courseCodeInput" class="search-input" placeholder="Es: ALFA, BRAVO..." autocomplete="off">
                     <button onclick="sbloccaCorso()" class="search-btn" id="searchBtn">Accedi</button>
                 </div>
                 <div id="messageBox" class="message-box"></div>
@@ -174,28 +564,30 @@
 
             <!-- BOX WHATSAPP DINAMICO -->
             <div class="whatsapp-card" id="whatsappCard">
-                <p id="whatsappTitle">💬 Gruppo Ufficiale WhatsApp del Corso</p>
+                <div class="whatsapp-title" id="whatsappTitle">💬 Gruppo Ufficiale WhatsApp del Corso</div>
                 <div class="qr-holder">
                     <div id="waQrcode"></div>
                 </div>
                 <a href="#" id="waLinkBtn" class="wa-btn" target="_blank">ENTRA NEL GRUPPO</a>
             </div>
 
+            <!-- RISORSE FISSE E DINAMICHE -->
             <div id="logisticaFissa"></div>
             <div id="didatticaDinamica"></div>
         </div>
 
+        <!-- COLONNA DESTRA -->
         <div class="col-right">
-            <div class="media-panel">
+            <div class="card">
                 <div class="category-title" style="margin-top:0;" id="panelMediaTitle">📺 Media & Training Feed</div>
                 
-                <!-- CONTAINER DEL PLAYER INTELLIGENTE (IFRAME EMBED) -->
+                <!-- CONTAINER PLAYER VIDEO -->
                 <div class="video-container" id="playerWrapper"></div>
                 
                 <div class="video-playlist" id="playlistContainer"></div>
 
                 <div class="news-panel">
-                    <h3 id="newsPanelTitle">📢 COESPU INFO & AVVISI UTILI</h3>
+                    <div class="news-panel-header" id="newsPanelTitle">📢 COESPU INFO & AVVISI UTILI</div>
                     <div class="ticker-container">
                         <div class="ticker-wrapper" id="newsTickerWrapper"></div>
                     </div>
@@ -220,7 +612,7 @@
     let databaseVideoFissi = [];
     let databaseNotizie = [];
 
-    // Helper per separare le righe CSV gestendo correttamente virgolette e virgole
+    // CSV Parser avanzato per gestire virgolette e virgole annidate
     function parseCSVLine(line) {
         let result = [];
         let cur = '';
@@ -294,7 +686,7 @@
             
             const qrContainer = document.getElementById("qrcode");
             qrContainer.innerHTML = "";
-            new QRCode(qrContainer, { text: window.location.href, width: 140, height: 140, colorDark: "#0a0a0a", correctLevel: QRCode.CorrectLevel.H });
+            new QRCode(qrContainer, { text: window.location.href, width: 130, height: 130, colorDark: "#0a0a0a", correctLevel: QRCode.CorrectLevel.H });
         } catch (error) {
             console.error("Errore nel caricamento del CSV:", error);
         }
@@ -306,7 +698,7 @@
         container.innerHTML = "";
 
         if (listaVideo.length === 0) {
-            container.innerHTML = "<p style='font-size:0.8rem;color:#666;padding:10px;'>Nessun video disponibile</p>";
+            container.innerHTML = "<p style='font-size:0.8rem;color:var(--text-muted);padding:10px;'>Nessun video disponibile</p>";
             playerWrapper.innerHTML = "";
             return;
         }
@@ -316,7 +708,7 @@
         listaVideo.forEach((v, index) => {
             const item = document.createElement('div');
             item.className = "playlist-item" + (index === 0 ? " active" : "");
-            item.innerHTML = `<span>${v.icona || '🎥'}</span><div><strong>${v.nome}</strong><br><span style='font-size:0.75rem;color:#aaa'>${v.meta}</span></div>`;
+            item.innerHTML = `<span>${v.icona || '🎥'}</span><div><strong>${v.nome}</strong><br><span style='font-size:0.75rem;color:var(--text-muted)'>${v.meta}</span></div>`;
             item.onclick = function() {
                 document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
                 item.classList.add('active');
@@ -355,7 +747,7 @@
         const container = document.getElementById('newsTickerWrapper');
         container.innerHTML = "";
         if (databaseNotizie.length === 0) {
-            container.innerHTML = "<div class='news-item'><div class='news-title'>Nessun avviso</div><div class='news-desc'>Nessuna comunicazione recente per i corsi.</div></div>";
+            container.innerHTML = "<div class='news-item'><div class='news-title'>Nessun avviso</div><div class='news-desc'>Nessuna comunicazione recente.</div></div>";
             return;
         }
         databaseNotizie.forEach(n => {
@@ -422,7 +814,7 @@
             
             new QRCode(waQrContainer, {
                 text: corso.whatsapp.url,
-                width: 150, height: 150,
+                width: 140, height: 140,
                 colorDark: "#128C7E", colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
@@ -490,8 +882,16 @@
         if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
     }
 
-    // Caricamento immediato all'avvio
-    document.addEventListener("DOMContentLoaded", caricaDatiDaGoogle);
+    // Listener invio da tastiera sull'input
+    document.addEventListener("DOMContentLoaded", () => {
+        caricaDatiDaGoogle();
+        const input = document.getElementById('courseCodeInput');
+        input.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') {
+                sbloccaCorso();
+            }
+        });
+    });
 </script>
 </body>
 </html>
