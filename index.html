@@ -368,7 +368,51 @@
             background: var(--accent-hover);
         }
 
-        /* Sezione Destra: Media & Ticker */
+        /* Sezione Mappa Interattiva Google My Maps */
+        .map-container {
+            width: 100%;
+            height: 380px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--panel-border);
+            margin-bottom: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.4);
+        }
+
+        .map-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .map-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 24px;
+        }
+
+        .btn-map-fullscreen {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-decoration: none;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-map-fullscreen:hover {
+            background: var(--accent);
+            color: #050505;
+        }
+
+        /* Sezione Media & Ticker */
         .video-container {
             width: 100%;
             aspect-ratio: 16/9;
@@ -578,6 +622,22 @@
 
         <!-- COLONNA DESTRA -->
         <div class="col-right">
+            
+            <!-- SCHEDA MAPPA INTERATTIVA -->
+            <div class="card">
+                <div class="category-title" style="margin-top:0;" id="panelMapTitle">🗺️ Mappa Interattiva CoESPU</div>
+                <div class="map-container">
+                    <!-- Sostituisci il src con l'URL embed generato da Google My Maps -->
+                    <iframe id="googleMapIframe" src="<iframe src="https://www.google.com/maps/d/u/1/embed?mid=1kdT4lt5nWbnOroW669LdgrngyoZ9dU0&ehbc=2E312F" width="640" height="480"></iframe>" allowfullscreen loading="lazy"></iframe>
+                </div>
+                <div class="map-actions">
+                    <a href="INSERISCI_QUI_IL_TUO_LINK_EMBED" id="mapFullscreenBtn" target="_blank" class="btn-map-fullscreen">
+                        <span>⛶</span> <span id="mapFullscreenText">Apri a schermo intero</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- SCHEDA MEDIA & FEED -->
             <div class="card">
                 <div class="category-title" style="margin-top:0;" id="panelMediaTitle">📺 Media & Training Feed</div>
                 
@@ -601,9 +661,9 @@
     const LINK_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSVrz56Xv-4GdQ0Mzvc2QY7MEUGxEO3k1ITsDfJkVuxjBqa0E7DwEsujCgtrIIir1nnZF_SMCStZxl5/pub?output=csv";
 
     const translations = {
-        it: { subTitle: "Portale Supporto Logistico & Didattico", searchTitle: "Sblocco Materiale del Corso", placeholder: "Es: ALFA, BRAVO...", btnSearch: "Accedi", qrText: "SCANSIONA PER ACCEDERE AL PORTALE", catLogistica: "📍 Logistica e Orientamento Centro (CoESPU)", catDidattica: "📋 Risorse Didattiche Sbloccate", catAI: "🤖 Assistente Virtuale AI", dlText: "APRI / SCARICA", errInvalid: "Codice corso non valido o scaduto.", succValid: "Corso sbloccato con successo!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & AVVISI UTILI", waBtnText: "ENTRA NEL GRUPPO" },
-        en: { subTitle: "Logistics & Training Support Portal", searchTitle: "Unlock Course Material", placeholder: "E.g.: ALFA, BRAVO...", btnSearch: "Access", qrText: "SCAN TO ACCESS THE PORTAL", catLogistica: "📍 Center Logistics & Orientation (CoESPU)", catDidattica: "📋 Unlocked Training Resources", catAI: "🤖 AI Virtual Assistant", dlText: "OPEN / DOWNLOAD", errInvalid: "Invalid or expired course code.", succValid: "Course unlocked successfully!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & USEFUL NOTICES", waBtnText: "JOIN THE GROUP" },
-        fr: { subTitle: "Portail de Support Logistique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", qrText: "SCANNEZ POUR ACCÉDER AU PORTAIL", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", panelMediaTitle: "📺 Flux Média & Entraînement", newsPanelTitle: "📢 COESPU INFO & AVIS UTILES", waBtnText: "REJOINDRE LE GROUPE" }
+        it: { subTitle: "Portale Supporto Logistico & Didattico", searchTitle: "Sblocco Materiale del Corso", placeholder: "Es: ALFA, BRAVO...", btnSearch: "Accedi", qrText: "SCANSIONA PER ACCEDERE AL PORTALE", catLogistica: "📍 Logistica e Orientamento Centro (CoESPU)", catDidattica: "📋 Risorse Didattiche Sbloccate", catAI: "🤖 Assistente Virtuale AI", dlText: "APRI / SCARICA", errInvalid: "Codice corso non valido o scaduto.", succValid: "Corso sbloccato con successo!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & AVVISI UTILI", waBtnText: "ENTRA NEL GRUPPO", panelMapTitle: "🗺️ Mappa Interattiva CoESPU", mapFullscreenText: "Apri a schermo intero" },
+        en: { subTitle: "Logistics & Training Support Portal", searchTitle: "Unlock Course Material", placeholder: "E.g.: ALFA, BRAVO...", btnSearch: "Access", qrText: "SCAN TO ACCESS THE PORTAL", catLogistica: "📍 Center Logistics & Orientation (CoESPU)", catDidattica: "📋 Unlocked Training Resources", catAI: "🤖 AI Virtual Assistant", dlText: "OPEN / DOWNLOAD", errInvalid: "Invalid or expired course code.", succValid: "Course unlocked successfully!", panelMediaTitle: "📺 Media & Training Feed", newsPanelTitle: "📢 COESPU INFO & USEFUL NOTICES", waBtnText: "JOIN THE GROUP", panelMapTitle: "🗺️ CoESPU Interactive Map", mapFullscreenText: "Open full screen" },
+        fr: { subTitle: "Portail de Support Logistique & Pédagogique", searchTitle: "Déverrouiller le Matériel de Cours", placeholder: "Ex: ALFA, BRAVO...", btnSearch: "Entrer", qrText: "SCANNEZ POUR ACCÉDER AU PORTAIL", catLogistica: "📍 Logistique & Orientation du Centre (CoESPU)", catDidattica: "📋 Ressources Pédagogiques Déverrouillées", catAI: "🤖 Assistant Virtuel IA", dlText: "OUVRIR / TÉLÉCHARGER", errInvalid: "Code de cours invalide ou expiré.", succValid: "Cours déverrouillé avec succès!", panelMediaTitle: "📺 Flux Média & Entraînement", newsPanelTitle: "📢 COESPU INFO & AVIS UTILES", waBtnText: "REJOINDRE LE GROUPE", panelMapTitle: "🗺️ Carte Interactive CoESPU", mapFullscreenText: "Ouvrir en plein écran" }
     };
 
     let currentLang = 'it';
@@ -612,7 +672,6 @@
     let databaseVideoFissi = [];
     let databaseNotizie = [];
 
-    // CSV Parser avanzato per gestire virgolette e virgole annidate
     function parseCSVLine(line) {
         let result = [];
         let cur = '';
@@ -874,6 +933,9 @@
         document.getElementById('panelMediaTitle').innerText = translations[lang].panelMediaTitle;
         document.getElementById('newsPanelTitle').innerText = translations[lang].newsPanelTitle;
         document.getElementById('waLinkBtn').innerText = translations[lang].waBtnText;
+        document.getElementById('panelMapTitle').innerText = translations[lang].panelMapTitle;
+        document.getElementById('mapFullscreenText').innerText = translations[lang].mapFullscreenText;
+        
         renderLogisticaFissa();
         const inputVal = document.getElementById('courseCodeInput').value;
         if(inputVal) sbloccaCorso();
@@ -882,7 +944,6 @@
         if(window.event && window.event.currentTarget) window.event.currentTarget.classList.add('active');
     }
 
-    // Listener invio da tastiera sull'input
     document.addEventListener("DOMContentLoaded", () => {
         caricaDatiDaGoogle();
         const input = document.getElementById('courseCodeInput');
